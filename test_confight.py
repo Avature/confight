@@ -3,7 +3,7 @@ import os
 
 import pytest
 from hamcrest import (assert_that, has_entry, has_key, has_entries, is_, empty,
-                      only_contains, contains_inanyorder)
+                      only_contains, contains_inanyorder, contains)
 
 from confight import parse, merge, find, load, load_paths, load_app
 
@@ -141,6 +141,20 @@ class TestFind(object):
             is_(True)
         )
 
+    def test_it_should_load_existing_files(self, examples):
+        path = examples.get(FILES[0])
+
+        found = find(path)
+
+        assert_that(found, contains(path))
+
+    def test_it_should_normalize_relative_paths(self):
+        path = os.path.join('.', os.path.basename(__file__))
+
+        found = find(path)
+
+        assert_that(found, contains(__file__))
+
     def test_it_should_return_nothing_for_missing_directories(self):
         assert_that(find('/path/to/nowhere'), is_(empty()))
 
@@ -189,7 +203,7 @@ class TestLoadPaths(object):
         examples.clear()
         paths = sorted(examples.get_many(SORTED_FILES))
 
-        config = load_paths(paths[0], str(examples.tmpdir))
+        config = load_paths([paths[0], str(examples.tmpdir)])
 
         assert_that(config, has_entry('section', has_entry('key', 'second')))
 
