@@ -50,9 +50,11 @@ def load_app_paths(file_path=None, dir_path=None,
     :param dir_path: Path to the extension config directory
     :param user_file_path: Path to the user base config file
     :param user_dir_path: Path to the user base config file
+    :param paths: Extra paths to add to the parsing after the defaults
     :returns: Single dict with all the loaded config
     """
     paths = [file_path, dir_path, user_file_path, user_dir_path]
+    paths += kwargs.pop('paths', None) or []
     return load_paths([path for path in paths if path], **kwargs)
 
 

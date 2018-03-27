@@ -222,6 +222,20 @@ class TestLoadApp(object):
             '/etc/myapp/config.toml', '/etc/myapp/conf.d',
         ))
 
+    def test_it_should_load_extra_paths(self):
+        def myparser(path, format=None):
+            return {path: True}
+
+        def myfinder(path):
+            return [path]
+
+        config = load_app('myapp', paths=['/extra/path'],
+                          parser=myparser, finder=myfinder)
+
+        assert_that(list(config), contains_inanyorder(
+            '/etc/myapp/config.toml', '/etc/myapp/conf.d', '/extra/path'
+        ))
+
 
 class Repository(object):
     def __init__(self, tmpdir):
