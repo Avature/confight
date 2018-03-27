@@ -1,7 +1,13 @@
+confight (0.1.0) unstable; urgency=medium
+
+  * [23927421] Reorganize pretty functions and find behaviour
+  * [fade6dd0] Adds debian packaging
+  * [c818857a] Update README
+
+ -- Platform <platform@avature.net>  Tue, 27 Mar 2018 18:23:13 +0200
+
 confight (0.0.1) unstable; urgency=medium
 
-  * [fade6dd0] Adds debian packaging
-  * [34c96e6d] Update README
   * Initial release.
 
- -- Platform <platform@avature.net>  Mon, 26 Mar 2018 17:50:12 +0200
+ -- Platform <platform@avature.net>  Tue, 27 Mar 2018 18:20:19 +0200

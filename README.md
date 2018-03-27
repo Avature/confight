@@ -258,3 +258,14 @@ Install the application and run tests in development:
 
 Changelog
 =========
+
+* 0.1.0 (2018-03-27)
+
+  * [23927421] Reorganize pretty functions and find behaviour
+  * [fade6dd0] Adds debian packaging
+  * [c818857a] Update README
+
+* 0.0.1 (2018-03-27)
+
+  * Initial release.
+
