@@ -1,0 +1,17 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+export PYBUILD_NAME=confight
+DESTDIR2:=debian/python-confight
+DESTDIR3:=debian/python3-confight
+
+%:
+	dh $@ --with python2,python3 --buildsystem=pybuild --tests-pytest
+
+override_dh_installman:
+	mkdir -p docs
+	pandoc README.md --standalone -f markdown -t man | tee docs/confight.1 > docs/confight3.1
+	dh_installman --all
+
+override_dh_compress:
+	dh_compress --exclude=README.md

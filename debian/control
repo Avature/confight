@@ -1,0 +1,28 @@
+Source: confight
+Section: devel
+Priority: extra
+Maintainer: Platform <platform@avature.net>
+Standards-Version: 4.0.0
+Build-Depends: debhelper (>= 9),
+               dh-python,
+               python-setuptools,
+               python3-setuptools,
+               python-all (>= 2.7),
+               python3-all (>= 3.2),
+               pandoc (>= 1.9)
+
+Package: python-confight
+Architecture: all
+Depends: ${python:Depends}, ${misc:Depends} python-toml
+Suggests:
+Description: Common config loading for Python2
+ .
+ This package installs the library for Python 2.
+
+Package: python3-confight
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends} python3-toml
+Suggests:
+Description: Common config loading for Python3
+ .
+ This package installs the library for Python 3.

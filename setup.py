@@ -12,7 +12,7 @@ def get_version_from_debian_changelog():
 
 
 setup(
-    name='piglet',
+    name='confight',
     version=get_version_from_debian_changelog(),
     author='Platform',
     author_email='platform@avature.net',
