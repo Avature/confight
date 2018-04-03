@@ -1,3 +1,9 @@
+confight (0.1.1) unstable; urgency=medium
+
+  * [80087037] Allows to pass extra paths in load functions
+
+ -- Platform <platform@avature.net>  Tue, 03 Apr 2018 19:27:41 +0200
+
 confight (0.1.0) unstable; urgency=medium
 
   * [23927421] Reorganize pretty functions and find behaviour

@@ -259,6 +259,10 @@ Install the application and run tests in development:
 Changelog
 =========
 
+* 0.1.1 (2018-04-03)
+
+  * [80087037] Allows to pass extra paths in load functions
+
 * 0.1.0 (2018-03-27)
 
   * [23927421] Reorganize pretty functions and find behaviour
