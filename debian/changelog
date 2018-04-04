@@ -1,3 +1,9 @@
+confight (0.2) unstable; urgency=medium
+
+  * [63d55fa8] Add Yaml support
+
+ -- Platform <platform@avature.net>  Wed, 04 Apr 2018 17:54:49 +0200
+
 confight (0.1.1) unstable; urgency=medium
 
   * [80087037] Allows to pass extra paths in load functions

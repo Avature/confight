@@ -259,6 +259,10 @@ Install the application and run tests in development:
 Changelog
 =========
 
+* 0.2 (2018-04-04)
+
+  * [63d55fa8] Add Yaml support
+
 * 0.1.1 (2018-04-03)
 
   * [80087037] Allows to pass extra paths in load functions
