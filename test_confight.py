@@ -5,7 +5,7 @@ import pytest
 from hamcrest import (assert_that, has_entry, has_key, has_entries, is_, empty,
                       only_contains, contains_inanyorder, contains)
 
-from confight import parse, merge, find, load, load_paths, load_app
+from confight import parse, merge, find, load, load_paths, load_app, FORMATS
 
 
 @pytest.fixture
@@ -17,6 +17,9 @@ FILES = [
     'basic_file.toml', 'basic_file.ini', 'basic_file.json', 'basic_file.cfg',
     'basic_file.js'
 ]
+if "yaml" in FORMATS:
+    FILES.extend(["basic_file.yaml", "basic_file.yml"])
+
 INVALID_FILES = [
     'invalid.toml', 'invalid.ini', 'invalid.json', 'invalid.cfg', 'invalid.js'
 ]
@@ -292,6 +295,18 @@ unicode = 💩
   }
 }
 """,
+        'basic_file.yaml': u"""
+section:
+    string: "json"
+    integer: 3
+    float: 3.5
+    boolean: false
+    null: null
+    list:
+        - third
+        - fourth
+    unicode: "💩"
+""",
         'invalid.toml': """
 [section]
 key = null
@@ -327,3 +342,6 @@ key = second
     _contents['invalid.cfg'] = _contents['invalid.ini']
     _contents['bad_ext.ext'] = _contents['basic_file.toml']
     _contents['bad_ext.j'] = _contents['basic_file.json']
+    _contents['bad_ext.u'] = _contents['basic_file.yaml']
+    _contents['basic_file_yaml'] = _contents['basic_file.yaml']
+    _contents['basic_file.yml'] = _contents['basic_file.yaml']

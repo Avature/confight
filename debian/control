@@ -9,7 +9,8 @@ Build-Depends: debhelper (>= 9),
                python3-setuptools,
                python-all (>= 2.7),
                python3-all (>= 3.2),
-               pandoc (>= 1.9)
+               pandoc (>= 1.9),
+               tox
 
 Package: python-confight
 Architecture: all

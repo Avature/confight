@@ -14,28 +14,37 @@ import toml
 logger = logging.getLogger('confight')
 
 
-def load_user_app(name, **kwargs):
+def load_user_app(name, extension="toml", **kwargs):
     """Parse and merge app and user config from default locations
 
     User config will take precedence.
 
     :param name: Name of the application to load
+    :param extension: filename extension for config, defaults to `toml`
     :returns: Single dict with all the loaded config
     """
     kwargs.setdefault(
-        'user_file_path', os.path.join('~/.config/', name, 'config.toml'))
+        'user_file_path',
+        os.path.join('~/.config/', name, 'config.{ext}'.format(ext=extension))
+    )
     kwargs.setdefault(
         'user_dir_path', os.path.join('~/.config/', name, 'conf.d'))
-    return load_app(name, **kwargs)
+    return load_app(name, extension, **kwargs)
 
 
-def load_app(name, **kwargs):
+def load_app(name, extension="toml", **kwargs):
     """Parse and merge app config from default locations
 
     :param name: Name of the application to load
+    :param extension: filename extension for config, defaults to `toml`
     :returns: Single dict with all the loaded config
     """
-    kwargs.setdefault('file_path', os.path.join('/etc', name, 'config.toml'))
+    assert extension in FORMAT_EXTENSIONS, \
+        "Extension %s not in %s" % (extension, FORMAT_EXTENSIONS)
+    kwargs.setdefault(
+        'file_path',
+        os.path.join('/etc', name, 'config.{ext}'.format(ext=extension))
+    )
     kwargs.setdefault('dir_path', os.path.join('/etc', name, 'conf.d'))
     return load_app_paths(**kwargs)
 
@@ -172,6 +181,22 @@ FORMAT_LOADERS = {
     'toml': toml.load,
     'ini': load_ini
 }
+
+
+# Optional dependency yaml
+try:
+    import ruamel.yaml as yaml
+except ImportError:
+    pass
+else:
+    FORMATS = FORMATS + ('yaml',)
+    FORMAT_EXTENSIONS.update({
+        'yml': 'yaml',
+        'yaml': 'yaml'
+    })
+    FORMAT_LOADERS.update({
+        'yaml': yaml.safe_load
+    })
 
 
 def format_from_path(path):

@@ -18,4 +18,7 @@ setup(
     author_email='platform@avature.net',
     py_modules=['confight'],
     install_requires=open('requirements.txt').read().splitlines(),
+    extras_require={
+        'yaml': ["ruamel.yaml"],
+    }
 )
