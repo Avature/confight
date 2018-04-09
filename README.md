@@ -5,13 +5,53 @@
 confight
 ========
 
-Parse configurations like a pr0.
+One simple way of parsing configs
 
-- Extensible config via `conf.d` directory
-- Allow for multiple formats (*toml*, *json*, *ini*)
+- Extensible "*Unix-like*" `conf.d` directory
+- Allow for multiple formats (*toml*, *json*, *yaml*, *ini*)
 - Full unicode support
 - Personalize every aspect when needed
 - Autodetect file formats
+- User settings `~/.config` support
+- Nice out-of-the-box defaults
+- See [examples](#examples)
+
+**confight** focuses on making application configuration easy to load, change,
+extend, generate and audit. It does so by allowing to use separated files for
+different topics, simplifying changes and new additions, without messing with
+already existing defaults or deleting or moving protected files.
+
+This is achieved by using at least one config file (`/etc/app/config.toml`)
+and an extra directory (`/etc/app/conf.d`) for extra files.
+
+Those extra files are called *droplets* which consist in is a small config
+file that is *"dropped"* into a `conf.d` directory where they will be parsed
+and merged nicely into a single final configuration.
+
+The idea is to "*map reduce*" configurations, by parsing all files *in order*,
+giving more relevance to the latest appearance and then merge them into a
+*single config* that holds all the data:
+
+```
+ C₀ -- parse -----|
+    C₁ -- parse --|
+    C₂ -- parse --|-- merge --> C
+       ⋮          |
+    Cₙ -- parse --|
+```
+
+The name of those files will determine the order in which they're parsed and
+the priority their values will have when merging. The last one wins.
+
+This approach is very common in Unix and used in cron (`/etc/cron.d`), bash
+profiles (`/etc/profile.d`), apt (`/etc/apt/sources.list.d`), systemd and many
+others. Is specially good for externally managed configs or *debian-packaged*
+applications, avoiding clashes between installed files and generated configs,
+avoiding changes that would stay forever unless manually merged (Yes, I've
+said 💩MANUALLY💩💩Placing new files in `conf.d`, application configuration
+can change be extended and overriden without getting dirty.
+
+## Usage
 
 ```python
 >>> import confight
@@ -47,53 +87,6 @@ User custom configurations would be read (if any) from:
 
 See the [examples](#examples) section for more information on how to use these
 functions.
-
-## Rationale
-
-We all agree that changing config files using nothing but *sed* or your bare
-hands is nasty, isn't it?
-
-The *right* way of extending and changing configuration, either by hand or
-from scripts, is to create a new small config file and place it at the
-application `conf.d` directory, from where it will be parsed and merged nicely
-into a single final configuration.
-
-This allows to separate configs in different topics, make modifications and
-extensions all without messing with already existing defaults or deleting or
-moving protected files.
-
-This is specially good for *debian-packaged* applications, beacause modified
-files won't get updated with new configs for the next version, and so they'll
-stay forever unless manually merged (Yes, I've said 💩MANUALLY!💩💩).  By
-placing new files in those directories, application configuration can change
-be extended and overriden without getting dirty.
-
-The idea is to "*map reduce*" configurations, by parsing all files in
-order and then merge them into a single config that holds all the data:
-
-```
- C₀ -- parse -----|
-    C₁ -- parse --|
-    C₂ -- parse --|-- merge --> C
-       ⋮          |
-    Cₙ -- parse --|
-```
-
-## Droplets
-
-A **droplet** is a small config file that is *dropped* into a `conf.d`
-directory so the application can parse and merge it with the rest of the
-config.
-
-This allows to extend and override config values by creating new files instead
-of messing with existing configurations which is always tricky.
-
-This approach is very common in Linux and used in cron (`/etc/cron.d`), bash
-profiles (`/etc/profile.d`), apt (`/etc/apt/sources.list.d`), systemd and many
-other.s
-
-The name of those files will determine the order in which they're parsed and
-the priority their values will have when merging.
 
 ## Loading
 
@@ -177,9 +170,9 @@ merging, this is from less to more priority for their values.
 
 ## Examples
 
-Load application config from default location by using the `load_app` function
-which will look by default at the `/etc/myapp/config.toml` and configuration
-directory at `/etc/myapp/conf.d`:
+Load application config from the default locations by using the `load_app`
+function which will look by default at the `/etc/myapp/config.toml` and
+configuration directory at `/etc/myapp/conf.d`:
 
 ```
 # /etc/myapp/config.toml    # /etc/myapp/conf.d/production.toml
@@ -247,7 +240,7 @@ name = test                   name = erebus
 
 ## Development
 
-Run the application tests
+Run application tests
 
     tox
 
