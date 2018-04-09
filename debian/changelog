@@ -1,3 +1,9 @@
+confight (0.2.1) unstable; urgency=medium
+
+  * [93cd8a1c] Update README
+
+ -- Platform <platform@avature.net>  Mon, 09 Apr 2018 15:34:24 +0200
+
 confight (0.2) unstable; urgency=medium
 
   * [63d55fa8] Add Yaml support

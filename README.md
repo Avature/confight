@@ -252,6 +252,10 @@ Install the application and run tests in development:
 Changelog
 =========
 
+* 0.2.1 (2018-04-09)
+
+  * [93cd8a1c] Update README
+
 * 0.2 (2018-04-04)
 
   * [63d55fa8] Add Yaml support
