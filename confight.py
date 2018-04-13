@@ -39,7 +39,7 @@ def load_app(name, extension="toml", **kwargs):
     :param extension: filename extension for config, defaults to `toml`
     :returns: Single dict with all the loaded config
     """
-    assert extension in FORMAT_EXTENSIONS, \
+    assert extension in FORMAT_EXTENSIONS or 'format' in kwargs, \
         "Extension %s not in %s" % (extension, FORMAT_EXTENSIONS)
     kwargs.setdefault(
         'file_path',

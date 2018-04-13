@@ -213,31 +213,47 @@ class TestLoadPaths(object):
 
 class TestLoadApp(object):
     def test_it_should_load_from_default_path(self):
-        def myparser(path, format=None):
-            return {path: True}
-
-        def myfinder(path):
-            return [path]
-
-        config = load_app('myapp', parser=myparser, finder=myfinder)
+        config = self.load_app('myapp')
 
         assert_that(list(config), contains_inanyorder(
             '/etc/myapp/config.toml', '/etc/myapp/conf.d',
         ))
 
     def test_it_should_load_extra_paths(self):
+        config = self.load_app('myapp', paths=['/extra/path'])
+
+        assert_that(list(config), contains_inanyorder(
+            '/etc/myapp/config.toml', '/etc/myapp/conf.d', '/extra/path'
+        ))
+
+    def test_it_should_allow_using_known_extensions(self):
+        config = self.load_app('myapp', extension='json')
+
+        assert_that(list(config), contains_inanyorder(
+            '/etc/myapp/config.json', '/etc/myapp/conf.d',
+        ))
+
+    def test_it_should_reject_custom_extensions(self):
+        with pytest.raises(Exception):
+            self.load_app('myapp', extension='jsn')
+
+    def test_it_should_allow_using_custom_extensions_with_format(self):
+        config = self.load_app('myapp', extension='jsn', format='json')
+
+        assert_that(list(config), contains_inanyorder(
+            '/etc/myapp/config.jsn', '/etc/myapp/conf.d',
+        ))
+
+    def load_app(self, *args, **kwargs):
         def myparser(path, format=None):
             return {path: True}
 
         def myfinder(path):
             return [path]
 
-        config = load_app('myapp', paths=['/extra/path'],
-                          parser=myparser, finder=myfinder)
-
-        assert_that(list(config), contains_inanyorder(
-            '/etc/myapp/config.toml', '/etc/myapp/conf.d', '/extra/path'
-        ))
+        kwargs.setdefault('parser', myparser)
+        kwargs.setdefault('finder', myfinder)
+        return load_app(*args, **kwargs)
 
 
 class Repository(object):

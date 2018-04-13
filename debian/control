@@ -15,7 +15,7 @@ Build-Depends: debhelper (>= 9),
 Package: python-confight
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends} python-toml
-Suggests:
+Suggests: python-ruamel.yaml
 Description: Common config loading for Python2
  .
  This package installs the library for Python 2.
@@ -23,7 +23,7 @@ Description: Common config loading for Python2
 Package: python3-confight
 Architecture: all
 Depends: ${python3:Depends}, ${misc:Depends} python3-toml
-Suggests:
+Suggests: python3-ruamel.yaml
 Description: Common config loading for Python3
  .
  This package installs the library for Python 3.
