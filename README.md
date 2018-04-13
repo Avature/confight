@@ -252,6 +252,10 @@ Install the application and run tests in development:
 Changelog
 =========
 
+* 0.2.2 (2018-04-13)
+
+  * [3322a7a4] Allow custom file extensions when format is defined
+
 * 0.2.1 (2018-04-09)
 
   * [93cd8a1c] Update README

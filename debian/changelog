@@ -1,3 +1,9 @@
+confight (0.2.2) unstable; urgency=medium
+
+  * [3322a7a4] Allow custom file extensions when format is defined
+
+ -- Platform <platform@avature.net>  Fri, 13 Apr 2018 15:59:33 +0200
+
 confight (0.2.1) unstable; urgency=medium
 
   * [93cd8a1c] Update README
