@@ -1,0 +1,17 @@
+language: python
+python:
+  - "2.7"
+  - "3.5"
+  - "3.6"
+env:
+  matrix:
+    - TOXENV=py27-basic
+    - TOXENV=py35-basic
+    - TOXENV=py36-basic
+    - TOXENV=py27-yaml
+    - TOXENV=py35-yaml
+    - TOXENV=py36-yaml
+install:
+  - pip install tox
+script:
+  - tox -e $TOXENV
