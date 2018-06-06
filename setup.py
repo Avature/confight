@@ -20,5 +20,10 @@ setup(
     install_requires=open('requirements.txt').read().splitlines(),
     extras_require={
         'yaml': ["ruamel.yaml"],
-    }
+    },
+    entry_points={
+        'console_scripts': [
+            'confight = confight:cli',
+        ]
+    },
 )

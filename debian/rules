@@ -15,3 +15,7 @@ override_dh_installman:
 
 override_dh_compress:
 	dh_compress --exclude=README.md
+
+override_dh_auto_install:
+	dh_auto_install
+	cd $(DESTDIR3)/usr/bin && mv confight confight3

@@ -10,8 +10,6 @@ One simple way of parsing configs
 - Extensible "*Unix-like*" `conf.d` directory
 - Allow for multiple formats (*toml*, *json*, *yaml*, *ini*)
 - Full unicode support
-- Personalize every aspect when needed
-- Autodetect file formats
 - User settings `~/.config` support
 - Nice out-of-the-box defaults
 - See [examples](#examples)
@@ -237,6 +235,50 @@ name = test                   name = erebus
     "name": "erebus"
 }
 ```
+
+## Command line
+
+*confight* allows to inspect configuration from the command line.
+
+By using the *confight* command it would load the *myapp* configuration from
+it's default places and display the output in toml format:
+
+    confight show myapp
+
+This allows to preview the resulting config for an application after all
+merges have been resolved. It can come handy when figuring out what the
+application has loaded or to debug complex config scenarios.
+
+By passing the `--verbose INFO` interesting data such as all visited files is
+listed.
+
+### Command line options
+
+    usage: confight [-h] [--version] [-v {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
+                    {show} ...
+
+    One simple way of parsing configs
+
+    positional arguments:
+    {show}
+
+    optional arguments:
+    -h, --help            show this help message and exit
+    --version             show program's version number and exit
+    -v {DEBUG,INFO,WARNING,ERROR,CRITICAL}, --verbose {DEBUG,INFO,WARNING,ERROR,CRITICAL}
+                            Logging level default: ERROR ['DEBUG', 'INFO',
+                            'WARNING', 'ERROR', 'CRITICAL']
+
+
+## Installation
+
+Install it via pip using:
+
+    pip install confight
+
+Also with *yaml* support:
+
+    pip install confight[yaml]
 
 ## Development
 

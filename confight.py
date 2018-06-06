@@ -1,9 +1,14 @@
+from __future__ import print_function
+
 import io
 import os
+import sys
 import glob
 import json
 import logging
+import argparse
 import itertools
+import pkg_resources
 try:
     from ConfigParser import ConfigParser
 except ImportError:
@@ -109,11 +114,11 @@ def parse(path, format=None):
 
 
 def merge(configs):
-    """Merge list of dicts into a single one
+    """Merge list of dicts into a single dict
 
     For the same key, the last appearing value will prevail.
-    When value for a key is a dict, will merged recursively.
-    Merging dicts with other values will take dicts and ignore the rest.
+    When value for a key is a dict, it will merged recursively.
+    Merging dicts with other types will take the dict and ignore the other.
 
     :param configs: List of parsed config dicts in order
     :returns: dict with the merged resulting config
@@ -148,13 +153,16 @@ def check_access(path):
     """Return whether a config file or directory can be read"""
     if not path:
         return False
+    elif not os.path.exists(path):
+        logger.warning('Could not find %r', path)
+        return False
     elif not os.access(path, os.R_OK):
         logger.error('Could not read %r', path)
         return False
     elif os.path.isdir(path) and not os.access(path, os.X_OK):
         logger.error('Could not list directory %r', path)
         return False
-    elif os.access(path, os.X_OK):
+    elif os.path.isfile(path) and os.access(path, os.X_OK):
         logger.warning('Config file %r has exec permissions', path)
     return True
 
@@ -208,3 +216,44 @@ def format_from_path(path):
             'Unknown format extension {!r} for {!r}'.format(ext, path)
         )
     return format
+
+
+def get_version():
+    return 'confight ' + pkg_resources.get_distribution('confight').version
+
+
+def cli_configure_logging(args):
+    logger.setLevel(args.verbose)
+    logger.addHandler(logging.StreamHandler())
+
+
+def cli_show(args):
+    """Load config and show it"""
+    print(toml.dumps(load_user_app(args.name)), end='')
+
+
+def cli():
+    LOG_LEVELS = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
+    parser = argparse.ArgumentParser(
+        description='One simple way of parsing configs'
+    )
+    parser.add_argument('--version', action='version', version=get_version())
+    parser.add_argument(
+        '-v', '--verbose', choices=LOG_LEVELS, default='ERROR',
+        help='Logging level default: ERROR'
+    )
+    parser.set_defaults(func=lambda args: parser.print_help(file=sys.stderr))
+
+    subparsers = parser.add_subparsers()
+    show_parser = subparsers.add_parser('show')
+    show_parser.add_argument('name', help='Name of the application')
+    show_parser.set_defaults(func=cli_show)
+
+    args = parser.parse_args()
+    cli_configure_logging(args)
+    try:
+        args.func(args)
+    except Exception as error:
+        log = logger.exception if args.verbose == 'DEBUG' else logger.error
+        log('Error: %s', error)
+        sys.exit(1)
