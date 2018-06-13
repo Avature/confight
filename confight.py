@@ -16,6 +16,7 @@ except ImportError:
 
 import toml
 
+__version__ = ''
 logger = logging.getLogger('confight')
 
 

@@ -252,6 +252,8 @@ application has loaded or to debug complex config scenarios.
 By passing the `--verbose INFO` interesting data such as all visited files is
 listed.
 
+Added in version #VERSION#
+
 ### Command line options
 
     usage: confight [-h] [--version] [-v {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
@@ -268,7 +270,6 @@ listed.
     -v {DEBUG,INFO,WARNING,ERROR,CRITICAL}, --verbose {DEBUG,INFO,WARNING,ERROR,CRITICAL}
                             Logging level default: ERROR ['DEBUG', 'INFO',
                             'WARNING', 'ERROR', 'CRITICAL']
-
 
 ## Installation
 

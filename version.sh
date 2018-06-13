@@ -26,6 +26,8 @@ gbp dch \
     --id-length=8\
     --spawn-editor=always
 python write_changelog.py
+sed -i "s/#VERSION#/$VERSION/g" README.md
+sed -i "s/^__version__ = .*$/__version__ = '$VERSION'/g" confight.py
 git commit -am "Bumps version $VERSION"
 git tag $VERSION -am "Version $VERSION"
 echo "Created tag $VERSION"
