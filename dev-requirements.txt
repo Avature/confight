@@ -1,2 +1,3 @@
 pyHamcrest
 pytest
+subprocess32; python_version < '3.5'

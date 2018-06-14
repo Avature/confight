@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 import os
+try:
+    import subprocess32 as subprocess
+except ImportError:
+    import subprocess
 
 import pytest
 from hamcrest import (assert_that, has_entry, has_key, has_entries, is_, empty,
-                      only_contains, contains_inanyorder, contains)
+                      only_contains, contains_inanyorder, contains,
+                      contains_string)
 
 from confight import parse, merge, find, load, load_paths, load_app, FORMATS
 
@@ -256,6 +261,28 @@ class TestLoadApp(object):
         return load_app(*args, **kwargs)
 
 
+class TestCli(object):
+    def test_it_should_print_help(self):
+        out = subprocess.run([self.bin], stderr=subprocess.PIPE)
+
+        assert_that(out.stderr.decode('utf8'), contains_string('usage:'))
+
+    def run(self, args):
+        return subprocess.run(
+            [self.bin] + list(args),
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+
+    @property
+    def bin(self):
+        name = 'confight'
+        prefix = os.getenv('VIRTUAL_ENV', '')
+        if prefix:
+            name = os.path.join(prefix, 'bin', name)
+        return name
+
+
 class Repository(object):
     def __init__(self, tmpdir):
         self.tmpdir = tmpdir
@@ -268,16 +295,26 @@ class Repository(object):
     def get_many(self, names):
         return [self.get(name) for name in names]
 
+    def get_contents(self, name):
+        return self._contents[name]
+
     def clear(self):
         self._files.clear()
 
-    def load(self, name):
+    def create(self, name, contents):
         fileobj = self.tmpdir.join(name)
-        fileobj.write(self._contents[name].encode('utf8'), 'wb')
+        fileobj.write(contents, 'wb')
         return str(fileobj)
+
+    def load(self, name):
+        return self.create(name, self._contents[name].encode('utf8'))
 
     _files = {}
     _contents = {
+        'config.toml': u"""\
+[section]
+string = "toml"
+""",
         'basic_file.toml': u"""
 # Basic toml file
 [section]
