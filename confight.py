@@ -231,7 +231,10 @@ def cli_configure_logging(args):
 
 def cli_show(args):
     """Load config and show it"""
-    print(toml.dumps(load_user_app(args.name)), end='')
+    config = load_user_app(
+        args.name, prefix=args.prefix, user_prefix=args.user_prefix
+    )
+    print(toml.dumps(config), end='')
 
 
 def cli():
@@ -249,6 +252,10 @@ def cli():
     subparsers = parser.add_subparsers()
     show_parser = subparsers.add_parser('show')
     show_parser.add_argument('name', help='Name of the application')
+    show_parser.add_argument('--prefix', help='Base for default paths')
+    show_parser.add_argument(
+        '--user-prefix', help='Base for default user paths'
+    )
     show_parser.set_defaults(func=cli_show)
 
     args = parser.parse_args()

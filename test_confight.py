@@ -393,6 +393,25 @@ class TestCli(object):
 
         assert_that(out.stderr.decode('utf8'), contains_string('usage:'))
 
+    def test_it_should_show_message_on_exit(self, examples):
+        examples.clear()
+        examples.create('config.toml', b'[broken')
+
+        out = self.run(['show', 'name', '--prefix', str(examples.tmpdir)])
+
+        assert_that(out.stderr.decode('utf8'), contains_string('Error:'))
+        assert_that(out.returncode, is_(1))
+
+    def test_it_should_show_config(self, examples):
+        examples.clear()
+        examples.get('config.toml')
+        contents = examples.get_contents('config.toml')
+
+        out = self.run(['show', 'name', '--prefix', str(examples.tmpdir)])
+
+        assert_that(out.stdout.decode('utf8'), is_(contents))
+        assert_that(out.returncode, is_(0))
+
     def run(self, args):
         return subprocess.run(
             [self.bin] + list(args),
