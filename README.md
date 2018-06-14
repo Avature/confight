@@ -252,7 +252,7 @@ application has loaded or to debug complex config scenarios.
 By passing the `--verbose INFO` interesting data such as all visited files is
 listed.
 
-Added in version #VERSION#
+Added in version 0.3
 
 ### Command line options
 
@@ -294,6 +294,13 @@ Install the application and run tests in development:
 
 Changelog
 =========
+
+* 0.3 (2018-06-14)
+
+  * [a7b46ef1] Adds travis config file
+  * [5f625da9] Add tox-travis integration
+  * [1b678173] Adds confight command line tool
+  * [691e042a] Adds cli unit tests
 
 * 0.2.2 (2018-04-13)
 

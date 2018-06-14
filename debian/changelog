@@ -1,3 +1,12 @@
+confight (0.3) unstable; urgency=medium
+
+  * [a7b46ef1] Adds travis config file
+  * [5f625da9] Add tox-travis integration
+  * [1b678173] Adds confight command line tool
+  * [691e042a] Adds cli unit tests
+
+ -- Platform <platform@avature.net>  Thu, 14 Jun 2018 15:54:39 +0200
+
 confight (0.2.2) unstable; urgency=medium
 
   * [3322a7a4] Allow custom file extensions when format is defined
