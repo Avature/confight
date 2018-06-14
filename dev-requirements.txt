@@ -1,3 +1,4 @@
 pyHamcrest
 pytest
+mock; python_version < '3.6'
 subprocess32; python_version < '3.5'

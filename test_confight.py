@@ -4,13 +4,17 @@ try:
     import subprocess32 as subprocess
 except ImportError:
     import subprocess
+try:
+    import mock
+except ImportError:
+    from unittest import mock
 
 import pytest
 from hamcrest import (assert_that, has_entry, has_key, has_entries, is_, empty,
-                      only_contains, contains_inanyorder, contains,
-                      contains_string)
+                      only_contains, contains, contains_string)
 
-from confight import parse, merge, find, load, load_paths, load_app, FORMATS
+from confight import (parse, merge, find, load, load_paths, load_app,
+                      load_user_app, FORMATS)
 
 
 @pytest.fixture
@@ -149,13 +153,6 @@ class TestFind(object):
             is_(True)
         )
 
-    def test_it_should_load_existing_files(self, examples):
-        path = examples.get(FILES[0])
-
-        found = find(path)
-
-        assert_that(found, contains(path))
-
     def test_it_should_normalize_relative_paths(self):
         path = os.path.join('.', os.path.basename(__file__))
 
@@ -163,8 +160,46 @@ class TestFind(object):
 
         assert_that(found, contains(__file__))
 
+    def test_it_should_load_existing_files(self, examples):
+        path = examples.get(FILES[0])
+
+        found = find(path)
+
+        assert_that(found, contains(path))
+
     def test_it_should_return_nothing_for_missing_directories(self):
         assert_that(find('/path/to/nowhere'), is_(empty()))
+
+    def test_it_should_ignore_invalid_files(self):
+        found = find(None)
+
+        assert_that(found, is_(empty()))
+
+    def test_it_should_ignore_unreadable_files(self, examples):
+        unreadable_path = examples.load(FILES[0])
+        os.chmod(unreadable_path, 0o222)
+
+        found = find(unreadable_path)
+
+        assert_that(found, is_(empty()))
+
+    def test_it_should_ignore_unexplorable_dirs(self, tmpdir):
+        unexplorable_dir = str(tmpdir)
+        os.chmod(unexplorable_dir, 0o444)
+
+        found = find(unexplorable_dir)
+
+        assert_that(found, is_(empty()))
+
+    @mock.patch('confight.logger')
+    def test_it_should_warn_about_executable_config_files(self, logger, examples):
+        executable_file = examples.load(FILES[0])
+        os.chmod(executable_file, 0o777)
+
+        found = find(executable_file)
+
+        assert_that(found, contains(executable_file))
+        logger.warning.assert_called()
 
 
 class TestLoad(object):
@@ -216,49 +251,140 @@ class TestLoadPaths(object):
         assert_that(config, has_entry('section', has_entry('key', 'second')))
 
 
-class TestLoadApp(object):
-    def test_it_should_load_from_default_path(self):
-        config = self.load_app('myapp')
+class LoadAppBehaviour(object):
+    def loaded_paths(self, config):
+        return sorted(config, key=lambda k: config[k])
 
-        assert_that(list(config), contains_inanyorder(
-            '/etc/myapp/config.toml', '/etc/myapp/conf.d',
-        ))
+    def call_config_loader(self, loader, *args, **kwargs):
+        """Simulate config loading
 
-    def test_it_should_load_extra_paths(self):
-        config = self.load_app('myapp', paths=['/extra/path'])
-
-        assert_that(list(config), contains_inanyorder(
-            '/etc/myapp/config.toml', '/etc/myapp/conf.d', '/extra/path'
-        ))
-
-    def test_it_should_allow_using_known_extensions(self):
-        config = self.load_app('myapp', extension='json')
-
-        assert_that(list(config), contains_inanyorder(
-            '/etc/myapp/config.json', '/etc/myapp/conf.d',
-        ))
-
-    def test_it_should_reject_custom_extensions(self):
-        with pytest.raises(Exception):
-            self.load_app('myapp', extension='jsn')
-
-    def test_it_should_allow_using_custom_extensions_with_format(self):
-        config = self.load_app('myapp', extension='jsn', format='json')
-
-        assert_that(list(config), contains_inanyorder(
-            '/etc/myapp/config.jsn', '/etc/myapp/conf.d',
-        ))
-
-    def load_app(self, *args, **kwargs):
-        def myparser(path, format=None):
-            return {path: True}
+        Result is a dictionary with all loaded d[key, int] with every
+        loaded path the order in which they were loaded.
+        """
+        def myparser(path, format=None, _data={'n': 0}):
+            _data['n'] += 1
+            return {path: _data['n']}
 
         def myfinder(path):
             return [path]
 
         kwargs.setdefault('parser', myparser)
         kwargs.setdefault('finder', myfinder)
-        return load_app(*args, **kwargs)
+        return loader(*args, **kwargs)
+
+
+class TestLoadApp(LoadAppBehaviour):
+    def test_it_should_load_from_default_path(self):
+        config = self.load_app('myapp')
+
+        assert_that(self.loaded_paths(config), contains(
+            '/etc/myapp/config.toml', '/etc/myapp/conf.d',
+        ))
+
+    def test_it_should_load_extra_paths(self):
+        config = self.load_app('myapp', paths=['/extra/path'])
+
+        assert_that(self.loaded_paths(config), contains(
+            '/etc/myapp/config.toml', '/etc/myapp/conf.d', '/extra/path'
+        ))
+
+    def test_it_should_allow_using_known_extensions(self):
+        config = self.load_app('myapp', extension='json')
+
+        assert_that(self.loaded_paths(config), contains(
+            '/etc/myapp/config.json', '/etc/myapp/conf.d',
+        ))
+
+    def test_it_should_reject_custom_extensions(self):
+        with pytest.raises(ValueError):
+            self.load_app('myapp', extension='jsn', parser=parse)
+
+    def test_it_should_allow_using_custom_extensions_with_format(self):
+        config = self.load_app('myapp', extension='jsn', format='json')
+
+        assert_that(self.loaded_paths(config), contains(
+            '/etc/myapp/config.jsn', '/etc/myapp/conf.d',
+        ))
+
+    def test_it_should_use_prefix_for_default_locations(self):
+        config = self.load_app('myapp', prefix='/my/path')
+
+        assert_that(self.loaded_paths(config), contains(
+            '/my/path/config.toml', '/my/path/conf.d',
+        ))
+
+    def load_app(self, *args, **kwargs):
+        return self.call_config_loader(load_app, *args, **kwargs)
+
+
+class TestLoadUserApp(LoadAppBehaviour):
+    def test_it_should_load_from_default_user_path(self):
+        config = self.load_app('myapp')
+
+        assert_that(self.loaded_paths(config), contains(
+            '/etc/myapp/config.toml',
+            '/etc/myapp/conf.d',
+            '~/.config/myapp/config.toml',
+            '~/.config/myapp/conf.d'
+        ))
+
+    def test_it_should_load_extra_paths(self):
+        config = self.load_app('myapp', paths=['/extra/path'])
+
+        assert_that(self.loaded_paths(config), contains(
+            '/etc/myapp/config.toml',
+            '/etc/myapp/conf.d',
+            '~/.config/myapp/config.toml',
+            '~/.config/myapp/conf.d',
+            '/extra/path'
+        ))
+
+    def test_it_should_allow_using_known_extensions(self):
+        config = self.load_app('myapp', extension='json')
+
+        assert_that(self.loaded_paths(config), contains(
+            '/etc/myapp/config.json',
+            '/etc/myapp/conf.d',
+            '~/.config/myapp/config.json',
+            '~/.config/myapp/conf.d',
+        ))
+
+    def test_it_should_reject_custom_extensions(self):
+        with pytest.raises(ValueError):
+            self.load_app('myapp', extension='jsn', parser=parse)
+
+    def test_it_should_allow_using_custom_extensions_with_format(self):
+        config = self.load_app('myapp', extension='jsn', format='json')
+
+        assert_that(self.loaded_paths(config), contains(
+            '/etc/myapp/config.jsn',
+            '/etc/myapp/conf.d',
+            '~/.config/myapp/config.jsn',
+            '~/.config/myapp/conf.d',
+        ))
+
+    def test_it_should_use_prefix_for_default_locations(self):
+        config = self.load_app('myapp', prefix='/my/path')
+
+        assert_that(self.loaded_paths(config), contains(
+            '/my/path/config.toml',
+            '/my/path/conf.d',
+            '~/.config/myapp/config.toml',
+            '~/.config/myapp/conf.d',
+        ))
+
+    def test_it_should_use_prefix_for_default_user_locations(self):
+        config = self.load_app('myapp', user_prefix='/my/path')
+
+        assert_that(self.loaded_paths(config), contains(
+            '/etc/myapp/config.toml',
+            '/etc/myapp/conf.d',
+            '/my/path/config.toml',
+            '/my/path/conf.d',
+        ))
+
+    def load_app(self, *args, **kwargs):
+        return self.call_config_loader(load_user_app, *args, **kwargs)
 
 
 class TestCli(object):
