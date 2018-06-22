@@ -14,10 +14,16 @@ def get_version_from_debian_changelog():
 setup(
     name='confight',
     version=get_version_from_debian_changelog(),
-    author='Platform',
+    description='Common config loading for Python and the command line',
+    license='MIT',
+    author='Avature',
     author_email='platform@avature.net',
+    url='https://github.com/avature/confight',
+    keywords='config configuration droplets toml json ini yaml',
+    long_description=io.open('README.md', encoding='utf8').read(),
+    long_description_content_type='text/markdown',
     py_modules=['confight'],
-    install_requires=open('requirements.txt').read().splitlines(),
+    install_requires=io.open('requirements.txt').read().splitlines(),
     extras_require={
         'yaml': ["ruamel.yaml"],
     },
@@ -26,4 +32,10 @@ setup(
             'confight = confight:cli',
         ]
     },
+    classifiers=(
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ),
 )

@@ -5,6 +5,8 @@
 confight
 ========
 
+[![Build Status](https://travis-ci.org/Avature/confight.svg?branch=master)](https://travis-ci.org/Avature/confight)
+
 One simple way of parsing configs
 
 - Extensible "*Unix-like*" `conf.d` directory

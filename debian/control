@@ -16,7 +16,7 @@ Package: python-confight
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, python-toml, python-setuptools
 Suggests: python-ruamel.yaml
-Description: Common config loading for Python2
+Description: Common config loading for Python and the command line
  .
  This package installs the library for Python 2.
 
@@ -24,6 +24,6 @@ Package: python3-confight
 Architecture: all
 Depends: ${python3:Depends}, ${misc:Depends}, python3-toml, python3-setuptools
 Suggests: python3-ruamel.yaml
-Description: Common config loading for Python3
+Description: Common config loading for Python and the command line
  .
  This package installs the library for Python 3.
