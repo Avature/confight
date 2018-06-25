@@ -238,6 +238,23 @@ name = test                   name = erebus
 }
 ```
 
+To load configs from a *dev* or *debug* location use the `prefix` option.
+This will change the base to calculate default paths.
+
+```python
+# Loads from ./configs/config.toml and ./configs/config.d/*
+>>> confight.load_app('myapp', prefix='./configs')
+```
+
+The `user_prefix` option can be used altogether for user config files:
+
+```python
+# Loads from regular places and ./user/config.toml and ./user/config.d/*
+>>> confight.load_user_app('myapp', user_prefix='./user')
+```
+
+Added in version #VERSION#
+
 ## Command line
 
 *confight* allows to inspect configuration from the command line.

@@ -20,38 +20,39 @@ __version__ = '0.3'
 logger = logging.getLogger('confight')
 
 
-def load_user_app(name, extension="toml", **kwargs):
+def load_user_app(name, extension="toml", user_prefix=None, **kwargs):
     """Parse and merge app and user config from default locations
 
     User config will take precedence.
 
     :param name: Name of the application to load
     :param extension: filename extension for config, defaults to `toml`
+    :param user_prefix: base directory for default user config locations
+                        defaults to ~/.config/<name>
     :returns: Single dict with all the loaded config
     """
-    kwargs.setdefault(
-        'user_file_path',
-        os.path.join('~/.config/', name, 'config.{ext}'.format(ext=extension))
-    )
-    kwargs.setdefault(
-        'user_dir_path', os.path.join('~/.config/', name, 'conf.d'))
+    if user_prefix is None:
+        user_prefix = os.path.join('~/.config', name)
+    filename = 'config.{ext}'.format(ext=extension)
+    kwargs.setdefault('user_file_path', os.path.join(user_prefix, filename))
+    kwargs.setdefault('user_dir_path', os.path.join(user_prefix, 'conf.d'))
     return load_app(name, extension, **kwargs)
 
 
-def load_app(name, extension="toml", **kwargs):
+def load_app(name, extension="toml", prefix=None, **kwargs):
     """Parse and merge app config from default locations
 
     :param name: Name of the application to load
     :param extension: filename extension for config, defaults to `toml`
+    :param prefix: base directory for default config locations,
+                   defaults to `/etc/<name>`
     :returns: Single dict with all the loaded config
     """
-    assert extension in FORMAT_EXTENSIONS or 'format' in kwargs, \
-        "Extension %s not in %s" % (extension, FORMAT_EXTENSIONS)
-    kwargs.setdefault(
-        'file_path',
-        os.path.join('/etc', name, 'config.{ext}'.format(ext=extension))
-    )
-    kwargs.setdefault('dir_path', os.path.join('/etc', name, 'conf.d'))
+    if prefix is None:
+        prefix = os.path.join('/etc', name)
+    filename = 'config.{ext}'.format(ext=extension)
+    kwargs.setdefault('file_path', os.path.join(prefix, filename))
+    kwargs.setdefault('dir_path', os.path.join(prefix, 'conf.d'))
     return load_app_paths(**kwargs)
 
 
@@ -230,7 +231,10 @@ def cli_configure_logging(args):
 
 def cli_show(args):
     """Load config and show it"""
-    print(toml.dumps(load_user_app(args.name)), end='')
+    config = load_user_app(
+        args.name, prefix=args.prefix, user_prefix=args.user_prefix
+    )
+    print(toml.dumps(config), end='')
 
 
 def cli():
@@ -248,6 +252,10 @@ def cli():
     subparsers = parser.add_subparsers()
     show_parser = subparsers.add_parser('show')
     show_parser.add_argument('name', help='Name of the application')
+    show_parser.add_argument('--prefix', help='Base for default paths')
+    show_parser.add_argument(
+        '--user-prefix', help='Base for default user paths'
+    )
     show_parser.set_defaults(func=cli_show)
 
     args = parser.parse_args()
