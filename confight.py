@@ -247,21 +247,23 @@ def cli():
         '-v', '--verbose', choices=LOG_LEVELS, default='ERROR',
         help='Logging level default: ERROR'
     )
-    parser.set_defaults(func=lambda args: parser.print_help(file=sys.stderr))
-
-    subparsers = parser.add_subparsers()
+    subparsers = parser.add_subparsers(title='subcommands', dest='command')
     show_parser = subparsers.add_parser('show')
     show_parser.add_argument('name', help='Name of the application')
     show_parser.add_argument('--prefix', help='Base for default paths')
     show_parser.add_argument(
         '--user-prefix', help='Base for default user paths'
     )
-    show_parser.set_defaults(func=cli_show)
 
     args = parser.parse_args()
     cli_configure_logging(args)
+    # Use callbacks, parser.set_defaults(func=) does not work in Python3.3
+    callbacks = {
+        'show': cli_show,
+        None: lambda args: parser.print_help(file=sys.stderr),
+    }
     try:
-        args.func(args)
+        callbacks[args.command](args)
     except Exception as error:
         log = logger.exception if args.verbose == 'DEBUG' else logger.error
         log('Error: %s', error)

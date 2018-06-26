@@ -429,7 +429,7 @@ class TestCli(object):
 
 
 # Evil monkeypatching for python 3.3 and python 3.4
-if getattr(subprocess, 'run') is None:
+if getattr(subprocess, 'run', None) is None:
     class CompletedProcess:
         def __init__(self, **kwargs):
             self.__dict__.update(kwargs)
