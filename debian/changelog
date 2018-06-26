@@ -1,3 +1,12 @@
+confight (1.0) unstable; urgency=medium
+
+  * [736a6493] Adds prefix and user_prefix options
+  * [023158e5] Adds --prefix and --user-prefix cli options
+  * [f395fc44] Adapt tests to run in python 3.3 and 3.4
+  * [a144dab1] Update package metadata
+
+ -- Javier Santacruz <javier.santacruz@avature.net>  Tue, 26 Jun 2018 12:55:35 +0200
+
 confight (0.3) unstable; urgency=medium
 
   * [a7b46ef1] Adds travis config file

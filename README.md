@@ -253,7 +253,7 @@ The `user_prefix` option can be used altogether for user config files:
 >>> confight.load_user_app('myapp', user_prefix='./user')
 ```
 
-Added in version #VERSION#
+Added in version 1.0
 
 ## Command line
 
@@ -313,6 +313,13 @@ Install the application and run tests in development:
 
 Changelog
 =========
+
+* 1.0 (2018-06-26)
+
+  * [736a6493] Adds prefix and user_prefix options
+  * [023158e5] Adds --prefix and --user-prefix cli options
+  * [f395fc44] Adapt tests to run in python 3.3 and 3.4
+  * [a144dab1] Update package metadata
 
 * 0.3 (2018-06-14)
 
