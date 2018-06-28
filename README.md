@@ -1,12 +1,8 @@
-% confight(1)
-% Platform Team
-% March 2018
+confight
+========
 
 [![Build Status](https://travis-ci.org/Avature/confight.svg?branch=master)](https://travis-ci.org/Avature/confight)
 [![PyPI](https://img.shields.io/pypi/v/confight.svg)](https://pypi.org/project/confight/)
-
-confight
-========
 
 One simple way of parsing configs
 
