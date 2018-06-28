@@ -10,3 +10,4 @@ echo "Generated python packages"
 
 echo "Uploading to test repository"
 twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+#twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
