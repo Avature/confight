@@ -20,7 +20,7 @@ __version__ = '1.0'
 logger = logging.getLogger('confight')
 
 
-def load_user_app(name, extension="toml", user_prefix=None, **kwargs):
+def load_user_app(name, **kwargs):
     """Parse and merge app and user config from default locations
 
     User config will take precedence.
@@ -31,15 +31,14 @@ def load_user_app(name, extension="toml", user_prefix=None, **kwargs):
                         defaults to ~/.config/<name>
     :returns: Single dict with all the loaded config
     """
-    if user_prefix is None:
-        user_prefix = os.path.join('~/.config', name)
-    filename = 'config.{ext}'.format(ext=extension)
-    kwargs.setdefault('user_file_path', os.path.join(user_prefix, filename))
-    kwargs.setdefault('user_dir_path', os.path.join(user_prefix, 'conf.d'))
-    return load_app(name, extension, **kwargs)
+    filename = 'config.' + kwargs.get('extension', 'toml')
+    prefix = kwargs.pop('user_prefix', os.path.join('~/.config', name))
+    kwargs.setdefault('user_file_path', os.path.join(prefix, filename))
+    kwargs.setdefault('user_dir_path', os.path.join(prefix, 'conf.d'))
+    return load_app(name, **kwargs)
 
 
-def load_app(name, extension="toml", prefix=None, **kwargs):
+def load_app(name, extension="toml", **kwargs):
     """Parse and merge app config from default locations
 
     :param name: Name of the application to load
@@ -48,9 +47,8 @@ def load_app(name, extension="toml", prefix=None, **kwargs):
                    defaults to `/etc/<name>`
     :returns: Single dict with all the loaded config
     """
-    if prefix is None:
-        prefix = os.path.join('/etc', name)
-    filename = 'config.{ext}'.format(ext=extension)
+    filename = 'config.' + extension
+    prefix = kwargs.pop('prefix', os.path.join('/etc', name))
     kwargs.setdefault('file_path', os.path.join(prefix, filename))
     kwargs.setdefault('dir_path', os.path.join(prefix, 'conf.d'))
     return load_app_paths(**kwargs)
@@ -231,9 +229,9 @@ def cli_configure_logging(args):
 
 def cli_show(args):
     """Load config and show it"""
-    config = load_user_app(
-        args.name, prefix=args.prefix, user_prefix=args.user_prefix
-    )
+    kwargs = dict(prefix=args.prefix, user_prefix=args.user_prefix)
+    kwargs = {k: v for k, v in kwargs.items() if v is not None}
+    config = load_user_app(args.name, **kwargs)
     print(toml.dumps(config), end='')
 
 

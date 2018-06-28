@@ -2,13 +2,17 @@
 % Platform Team
 % March 2018
 
-confight
-========
-
 [![Build Status](https://travis-ci.org/Avature/confight.svg?branch=master)](https://travis-ci.org/Avature/confight)
 [![PyPI](https://img.shields.io/pypi/v/confight.svg)](https://pypi.org/project/confight/)
 
+confight
+========
+
 One simple way of parsing configs
+
+**confight** provide common configuration loading practices in configuration loading.
+It searches the files in the usual places and directories allowing to use small config
+files (*droplets*). Once loaded it merges all them into a single config to be used.
 
 - Extensible "*Unix-like*" `conf.d` directory
 - Allow for multiple formats (*toml*, *json*, *yaml*, *ini*)
@@ -16,41 +20,6 @@ One simple way of parsing configs
 - User settings `~/.config` support
 - Nice out-of-the-box defaults
 - See [examples](#examples)
-
-**confight** focuses on making application configuration easy to load, change,
-extend, generate and audit. It does so by allowing to use separated files for
-different topics, simplifying changes and new additions, without messing with
-already existing defaults or deleting or moving protected files.
-
-This is achieved by using at least one config file (`/etc/app/config.toml`)
-and an extra directory (`/etc/app/conf.d`) for extra files.
-
-Those extra files are called *droplets* which consist in is a small config
-file that is *"dropped"* into a `conf.d` directory where they will be parsed
-and merged nicely into a single final configuration.
-
-The idea is to "*map reduce*" configurations, by parsing all files *in order*,
-giving more relevance to the latest appearance and then merge them into a
-*single config* that holds all the data:
-
-```
- C₀ -- parse -----|
-    C₁ -- parse --|
-    C₂ -- parse --|-- merge --> C
-       ⋮          |
-    Cₙ -- parse --|
-```
-
-The name of those files will determine the order in which they're parsed and
-the priority their values will have when merging. The last one wins.
-
-This approach is very common in Unix and used in cron (`/etc/cron.d`), bash
-profiles (`/etc/profile.d`), apt (`/etc/apt/sources.list.d`), systemd and many
-others. Is specially good for externally managed configs or *debian-packaged*
-applications, avoiding clashes between installed files and generated configs,
-avoiding changes that would stay forever unless manually merged (Yes, I've
-said 💩MANUALLY💩💩Placing new files in `conf.d`, application configuration
-can change be extended and overriden without getting dirty.
 
 ## Usage
 
@@ -88,6 +57,61 @@ User custom configurations would be read (if any) from:
 
 See the [examples](#examples) section for more information on how to use these
 functions.
+
+## Command line
+
+*confight* allows to inspect configuration from the command line.
+
+By using the *confight* command it would load the *myapp* configuration from
+it's default places and display the output in toml format:
+
+    confight show myapp
+
+This allows to preview the resulting config for an application after all
+merges have been resolved. It can come handy when figuring out what the
+application has loaded or to debug complex config scenarios.
+
+By passing the `--verbose INFO` interesting data such as all visited files is
+listed.
+
+Added in version 0.3
+
+## How it works
+
+**confight** focuses on making application configuration easy to load, change,
+extend, generate and audit. It does so by allowing to use separated files for
+different topics, simplifying changes and new additions, without messing with
+already existing defaults or deleting or moving protected files.
+
+This is achieved by using at least one config file (`/etc/app/config.toml`)
+and an extra directory (`/etc/app/conf.d`) for extra files.
+
+Those extra files are called *droplets* which consist in is a small config
+file that is *"dropped"* into a `conf.d` directory where they will be parsed
+and merged nicely into a single final configuration.
+
+The idea is to "*map reduce*" configurations, by parsing all files *in order*,
+giving more relevance to the latest appearance and then merge them into a
+*single config* that holds all the data:
+
+```
+ C₀ -- parse -----|
+    C₁ -- parse --|
+    C₂ -- parse --|-- merge --> C
+       ⋮          |
+    Cₙ -- parse --|
+```
+
+The name of those files will determine the order in which they're parsed and
+the priority their values will have when merging. The last one wins.
+
+This approach is very common in Unix and used in cron (`/etc/cron.d`), bash
+profiles (`/etc/profile.d`), apt (`/etc/apt/sources.list.d`), systemd and many
+others. Is specially good for externally managed configs or *debian-packaged*
+applications, avoiding clashes between installed files and generated configs,
+avoiding changes that would stay forever unless manually merged (Yes, I've
+said 💩MANUALLY💩💩Placing new files in `conf.d`, application configuration
+can change be extended and overriden without getting dirty.
 
 ## Loading
 
@@ -201,9 +225,9 @@ parser.add_argument('--config', default=None)
 parser.add_argument('--config-dir', default=None)
 args = parser.parse_args()
 
-config = confight.load_app('myapp',
-                           file_path=args.config,
-                           dir_path=args.config_dir)
+kwargs = dict(config=args.config, config_dir=args.config_dir)
+kwargs = {k: v for k, v in kwargs.items() if v is not None}
+config = confight.load_app('myapp', **kwargs)
 ```
 
 If the application supports user configuration the function `load_user_app`
@@ -255,24 +279,6 @@ The `user_prefix` option can be used altogether for user config files:
 ```
 
 Added in version 1.0
-
-## Command line
-
-*confight* allows to inspect configuration from the command line.
-
-By using the *confight* command it would load the *myapp* configuration from
-it's default places and display the output in toml format:
-
-    confight show myapp
-
-This allows to preview the resulting config for an application after all
-merges have been resolved. It can come handy when figuring out what the
-application has loaded or to debug complex config scenarios.
-
-By passing the `--verbose INFO` interesting data such as all visited files is
-listed.
-
-Added in version 0.3
 
 ### Command line options
 
