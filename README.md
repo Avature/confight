@@ -3,6 +3,7 @@ confight
 
 [![Build Status](https://travis-ci.org/Avature/confight.svg?branch=master)](https://travis-ci.org/Avature/confight)
 [![PyPI](https://img.shields.io/pypi/v/confight.svg)](https://pypi.org/project/confight/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/confight.svg)](https://pypi.org/project/confight/)
 
 One simple way of parsing configs
 
