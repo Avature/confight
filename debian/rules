@@ -9,9 +9,9 @@ DESTDIR3:=debian/python3-confight
 	dh $@ --with python2,python3 --buildsystem=pybuild --tests-pytest
 
 override_dh_installman:
-	mkdir -p docs
-	pandoc README.md --standalone -f markdown -t man | tee docs/confight.1 > docs/confight3.1
-	dh_installman --all
+	cat docs/man-header.md README.md > docs/manpage.md | \
+	  pandoc --standalone -f markdown -t man > tee docs/confight.1
+	dh_installman --all docs/confight.1
 
 override_dh_compress:
 	dh_compress --exclude=README.md
@@ -19,3 +19,7 @@ override_dh_compress:
 override_dh_auto_install:
 	dh_auto_install
 	cd $(DESTDIR3)/usr/bin && mv confight confight3
+
+override_dh_clean:
+	rm -f docs/confight.1
+	dh_clean

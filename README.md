@@ -1,7 +1,3 @@
-% confight(1)
-% Platform Team
-% March 2018
-
 confight
 ========
 
