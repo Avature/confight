@@ -1,8 +1,9 @@
 confight
 ========
 
-[![Build Status](https://travis-ci.org/Avature/confight.svg?branch=master)](https://travis-ci.org/Avature/confight)
 [![PyPI](https://img.shields.io/pypi/v/confight.svg)](https://pypi.org/project/confight/)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/confight.svg)
+[![Build Status](https://travis-ci.org/Avature/confight.svg?branch=master)](https://travis-ci.org/Avature/confight)
 
 One simple way of parsing configs
 
