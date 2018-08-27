@@ -428,6 +428,32 @@ class TestCli(object):
         return name
 
 
+# Evil monkeypatching for python 3.3 and python 3.4
+if getattr(subprocess, 'run', None) is None:
+    class CompletedProcess:
+        def __init__(self, **kwargs):
+            self.__dict__.update(kwargs)
+
+    def maimed_run(*args, **kwargs):
+        with subprocess.Popen(*args, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate()
+            except:  # noqa
+                process.kill()
+                process.wait()
+                raise
+            retcode = process.poll()
+
+        return CompletedProcess(
+            args=process.args,
+            returncode=retcode,
+            stdout=stdout,
+            stderr=stderr
+        )
+
+    subprocess.run = maimed_run
+
+
 class Repository(object):
     def __init__(self, tmpdir):
         self.tmpdir = tmpdir

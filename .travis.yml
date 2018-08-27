@@ -2,9 +2,10 @@ language: python
 sudo: false
 python:
   - "2.7"
+  - "3.4"
   - "3.5"
   - "3.6"
-  - "3.7"
+#  - "3.7" Not yet in Travis
 install:
   - pip install tox-travis
 script:
