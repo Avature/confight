@@ -100,6 +100,10 @@ confight.load(['/path/to/config.toml', '/path/to/dir/droplet.toml'])
 
 Each function offers different parameters to improve the ease of use.
 
+The extension of the configuration file can be given with the `extension`
+parameter. For instance, `load_app('myapp', extension='json')` would look for
+the `/etc/myapp/config.json` file.
+
 ## Parsing
 
 Given a path to an existing configuration file, it will be loaded in memory
