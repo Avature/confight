@@ -12,7 +12,7 @@ import pkg_resources
 try:
     from ConfigParser import ConfigParser
 except ImportError:
-    from configparser import ConfigParser
+    from configparser import ConfigParser, ExtendedInterpolation
 
 import toml
 
@@ -170,7 +170,10 @@ def check_access(path):
 
 
 def load_ini(stream):
-    parser = ConfigParser()
+    if 'ExtendedInterpolation' in globals():
+        parser = ConfigParser(interpolation=ExtendedInterpolation())
+    else:
+        parser = ConfigParser()
     parser.readfp(stream)
     return {
         section: dict(parser.items(section))
