@@ -250,6 +250,19 @@ class TestLoadPaths(object):
 
         assert_that(config, has_entry('section', has_entry('key', 'second')))
 
+    def test_merges_must_retain_order(self, examples):
+        examples.clear()
+        paths = examples.get_many(FILES)
+
+        config = load(paths)
+
+        good_data = [
+            'string', 'integer', 'float', 'boolean', 'list', 'key', 'unicode',
+            'subsection', 'null'
+        ]
+
+        assert_that(config["section"].keys(), contains(*good_data))
+
 
 class LoadAppBehaviour(object):
     def loaded_paths(self, config):
@@ -525,7 +538,7 @@ section:
     integer: 3
     float: 3.5
     boolean: false
-    null: null
+    "null": null
     list:
         - third
         - fourth

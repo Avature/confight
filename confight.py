@@ -9,6 +9,7 @@ import logging
 import argparse
 import itertools
 import pkg_resources
+from collections import OrderedDict
 try:
     from ConfigParser import ConfigParser
     # Monkey patch python 2.7 version to avoid deprecation warnings
@@ -128,8 +129,12 @@ def merge(configs):
     :returns: dict with the merged resulting config
     """
     logger.debug('Merging config data %r', configs)
-    result = {}
-    for key in set(key for config in configs for key in config):
+    result = OrderedDict()
+    # No OrderedSets available
+    keys = OrderedDict(
+        (key, None) for config in configs for key in config
+    )
+    for key in keys:
         values = [config[key] for config in configs if key in config]
         merges = [v for v in values if isinstance(v, dict)]
         result[key] = merge(merges) if merges else values[-1]
@@ -178,7 +183,7 @@ def load_ini(stream):
         parser = ConfigParser()
     parser.read_file(stream)
     return {
-        section: dict(parser.items(section))
+        section: OrderedDict(parser.items(section))
         for section in parser.sections()
     }
 
@@ -192,8 +197,8 @@ FORMAT_EXTENSIONS = {
     'cfg': 'ini',
 }
 FORMAT_LOADERS = {
-    'json': json.load,
-    'toml': toml.load,
+    'json': lambda *args: json.load(*args, object_pairs_hook=OrderedDict),
+    'toml': lambda *args: toml.load(*args, _dict=OrderedDict),
     'ini': load_ini
 }
 
