@@ -11,6 +11,8 @@ import itertools
 import pkg_resources
 try:
     from ConfigParser import ConfigParser
+    # Monkey patch python 2.7 version to avoid deprecation warnings
+    setattr(ConfigParser, 'read_file', getattr(ConfigParser, 'readfp'))
 except ImportError:
     from configparser import ConfigParser, ExtendedInterpolation
 
@@ -174,7 +176,7 @@ def load_ini(stream):
         parser = ConfigParser(interpolation=ExtendedInterpolation())
     else:
         parser = ConfigParser()
-    parser.readfp(stream)
+    parser.read_file(stream)
     return {
         section: dict(parser.items(section))
         for section in parser.sections()
