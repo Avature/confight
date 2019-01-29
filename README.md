@@ -316,6 +316,16 @@ Install the application and run tests in development:
 Changelog
 =========
 
+* 1.1 (2019-01-29)
+
+  * [4a5920af] Adds pypi version badge to README
+  * [59c47a5e] Drops support for Python 3.3 and Python 3.4
+  * [dfa9c436] Adds support for Python 3.7
+  * [6979074d] Fix manpage generation
+  * [8f6b58f5] Create a parser with ExtendedInterpolation
+  * [7d74246d] Avoid DeprecationWarnings
+  * [633b1571] Ordered dicts everywhere
+
 * 1.0 (2018-06-26)
 
   * [736a6493] Adds prefix and user_prefix options
