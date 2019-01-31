@@ -316,6 +316,11 @@ Install the application and run tests in development:
 Changelog
 =========
 
+* 1.1.1 (2019-01-31)
+
+  [ javier.lasheras ]
+  * [a1646871] OrderedDict for yaml too
+
 * 1.1 (2019-01-29)
 
   * [4a5920af] Adds pypi version badge to README
