@@ -209,13 +209,16 @@ try:
 except ImportError:
     pass
 else:
+    def load_yaml(stream):
+        return yaml.load(stream, Loader=yaml.RoundTripLoader)
+
     FORMATS = FORMATS + ('yaml',)
     FORMAT_EXTENSIONS.update({
         'yml': 'yaml',
         'yaml': 'yaml'
     })
     FORMAT_LOADERS.update({
-        'yaml': yaml.safe_load
+        'yaml': load_yaml
     })
 
 
