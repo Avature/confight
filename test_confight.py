@@ -250,6 +250,18 @@ class TestLoadPaths(object):
 
         assert_that(config, has_entry('section', has_entry('key', 'second')))
 
+    def test_it_should_filter_extensions(self, examples):
+        examples.clear()
+        examples.get_many(FILES)
+        expected_contents = parse(examples.get(FILES[0]))  # toml file
+
+        config = load_paths(
+            [str(examples.tmpdir)], extension='toml', force_extension=True
+        )
+
+        # Only reads the toml file
+        assert_that(config, is_(expected_contents))
+
     def test_merges_must_retain_order(self, examples):
         examples.clear()
         paths = examples.get_many(FILES)
