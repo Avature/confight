@@ -30,6 +30,7 @@ def load_user_app(name, extension="toml", user_prefix=None, **kwargs):
 
     :param name: Name of the application to load
     :param extension: filename extension for config, defaults to `toml`
+    :param force_extension: Only read files with given extension.
     :param user_prefix: base directory for default user config locations
                         defaults to ~/.config/<name>
     :returns: Single dict with all the loaded config
@@ -49,6 +50,7 @@ def load_app(name, extension="toml", prefix=None, **kwargs):
     :param extension: filename extension for config, defaults to `toml`
     :param prefix: base directory for default config locations,
                    defaults to `/etc/<name>`
+    :param force_extension: Only read files with given extension.
     :returns: Single dict with all the loaded config
     """
     if prefix is None:
@@ -56,7 +58,7 @@ def load_app(name, extension="toml", prefix=None, **kwargs):
     filename = 'config.{ext}'.format(ext=extension)
     kwargs.setdefault('file_path', os.path.join(prefix, filename))
     kwargs.setdefault('dir_path', os.path.join(prefix, 'conf.d'))
-    return load_app_paths(**kwargs)
+    return load_app_paths(extension=extension, **kwargs)
 
 
 def load_app_paths(file_path=None, dir_path=None,
@@ -70,6 +72,7 @@ def load_app_paths(file_path=None, dir_path=None,
     :param user_file_path: Path to the user base config file
     :param user_dir_path: Path to the user base config file
     :param paths: Extra paths to add to the parsing after the defaults
+    :param force_extension: only read files with given extension.
     :returns: Single dict with all the loaded config
     """
     paths = [file_path, dir_path, user_file_path, user_dir_path]
@@ -77,14 +80,18 @@ def load_app_paths(file_path=None, dir_path=None,
     return load_paths([path for path in paths if path], **kwargs)
 
 
-def load_paths(paths, finder=None, **kwargs):
+def load_paths(paths, finder=None, extension=None,
+               force_extension=False, **kwargs):
     """Parse and merge config in path and directories
 
     :param finder: Finder function(dir_path) returning ordered list of paths
+    :param force_extension: Only read files with given extension.
     :returns: Single dict with all the loaded config
     """
     finder = find if finder is None else finder
     files = itertools.chain.from_iterable(finder(path) for path in paths)
+    if extension and force_extension:
+        files = (path for path in files if path.endswith('.' + extension))
     return load(files, **kwargs)
 
 
