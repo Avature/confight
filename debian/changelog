@@ -1,3 +1,9 @@
+confight (1.2) unstable; urgency=medium
+
+  * [3c266c8d] Force all loaded files to have the same extension
+
+ -- Javier Santacruz <javier.santacruz@avature.net>  Thu, 14 Feb 2019 12:03:39 +0100
+
 confight (1.1.1) unstable; urgency=medium
 
   [ javier.lasheras ]

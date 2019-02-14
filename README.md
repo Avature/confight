@@ -316,6 +316,10 @@ Install the application and run tests in development:
 Changelog
 =========
 
+* 1.2 (2019-02-14)
+
+  * [3c266c8d] Force all loaded files to have the same extension
+
 * 1.1.1 (2019-01-31)
 
   [ javier.lasheras ]
