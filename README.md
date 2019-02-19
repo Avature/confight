@@ -104,6 +104,10 @@ The extension of the configuration file can be given with the `extension`
 parameter. For instance, `load_app('myapp', extension='json')` would look for
 the `/etc/myapp/config.json` file.
 
+All files in the `conf.d` directory are read by default regardless the
+extension. To enforce that only `.extension` files are read, add the
+`force_extension` flag.
+
 ## Parsing
 
 Given a path to an existing configuration file, it will be loaded in memory

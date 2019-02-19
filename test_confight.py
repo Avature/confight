@@ -167,6 +167,15 @@ class TestFind(object):
 
         assert_that(found, contains(path))
 
+    def test_it_should_expand_user_variables(self, tmpdir, examples):
+        path = examples.get(FILES[0])
+        home = os.path.expanduser('~')
+        relpath = os.path.join('~', os.path.relpath(path, start=home))
+
+        found = find(relpath)
+
+        assert_that(found, contains(path))
+
     def test_it_should_return_nothing_for_missing_directories(self):
         assert_that(find('/path/to/nowhere'), is_(empty()))
 

@@ -157,9 +157,10 @@ def find(path):
     :param dir_path: Path to a config file or dir containing configs
     :returns: List of full paths of the files in the directory in lex. order
     """
+    if path:
+        path = os.path.abspath(os.path.expanduser(path))
     if not check_access(path):
         return []
-    path = os.path.abspath(os.path.expanduser(path))
     if os.path.isfile(path):
         return [path]
     return sorted(glob.glob(os.path.join(path, '*')))
