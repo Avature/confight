@@ -1,3 +1,9 @@
+confight (1.2.1) unstable; urgency=medium
+
+  * [491f8b05] Fixes find path expansion
+
+ -- Javier Santacruz <javier.santacruz@avature.net>  Tue, 19 Feb 2019 15:34:17 +0100
+
 confight (1.2) unstable; urgency=medium
 
   * [3c266c8d] Force all loaded files to have the same extension

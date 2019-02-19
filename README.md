@@ -320,6 +320,10 @@ Install the application and run tests in development:
 Changelog
 =========
 
+* 1.2.1 (2019-02-19)
+
+  * [491f8b05] Fixes find path expansion
+
 * 1.2 (2019-02-14)
 
   * [3c266c8d] Force all loaded files to have the same extension
