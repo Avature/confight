@@ -1,3 +1,9 @@
+confight (1.2.2) unstable; urgency=medium
+
+  * [7344c929] Fixes man generation in debian rules
+
+ -- Javier Santacruz <javier.santacruz@avature.net>  Tue, 19 Feb 2019 16:28:36 +0100
+
 confight (1.2.1) unstable; urgency=medium
 
   * [491f8b05] Fixes find path expansion
