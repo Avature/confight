@@ -29,8 +29,7 @@ python write_changelog.py
 sed -i "s/#VERSION#/$VERSION/g" README.md
 sed -i "s/^__version__ = .*$/__version__ = '$VERSION'/g" confight.py
 git commit -am "Bumps version $VERSION"
-git tag $VERSION -am "Version $VERSION"
+git tag -s $VERSION -am "Version $VERSION"
 echo "Created tag $VERSION"
 echo "Don't forget to: "
-echo " git push origin master"
-echo " git push origin $VERSION"
+echo " git push origin master $VERSION"

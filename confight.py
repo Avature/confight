@@ -171,7 +171,7 @@ def check_access(path):
     if not path:
         return False
     elif not os.path.exists(path):
-        logger.warning('Could not find %r', path)
+        logger.debug('Could not find %r', path)
         return False
     elif not os.access(path, os.R_OK):
         logger.error('Could not read %r', path)
