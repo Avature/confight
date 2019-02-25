@@ -1,3 +1,9 @@
+confight (1.2.3) unstable; urgency=medium
+
+  * [c1f5c919] Show missing file warnings as debug info
+
+ -- Javier Santacruz <javier.santacruz@avature.net>  Mon, 25 Feb 2019 10:25:05 +0100
+
 confight (1.2.2) unstable; urgency=medium
 
   * [7344c929] Fixes man generation in debian rules
