@@ -322,6 +322,15 @@ class TestLoadApp(LoadAppBehaviour):
             '/etc/myapp/config.toml', '/etc/myapp/conf.d', '/extra/path'
         ))
 
+    def test_it_should_add_default_as_priority_location(self):
+        config = self.load_app('myapp', default='/path/to/default')
+
+        assert_that(self.loaded_paths(config), contains(
+            '/path/to/default',
+            '/etc/myapp/config.toml',
+            '/etc/myapp/conf.d',
+        ))
+
     def test_it_should_allow_using_known_extensions(self):
         config = self.load_app('myapp', extension='json')
 

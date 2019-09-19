@@ -61,8 +61,8 @@ def load_app(name, extension="toml", prefix=None, **kwargs):
     return load_app_paths(extension=extension, **kwargs)
 
 
-def load_app_paths(file_path=None, dir_path=None,
-                   user_file_path=None, user_dir_path=None, **kwargs):
+def load_app_paths(file_path=None, dir_path=None, user_file_path=None,
+                   user_dir_path=None, default=None, paths=None, **kwargs):
     """Parse and merge user and app config files
 
     User config will have precedence
@@ -71,13 +71,15 @@ def load_app_paths(file_path=None, dir_path=None,
     :param dir_path: Path to the extension config directory
     :param user_file_path: Path to the user base config file
     :param user_dir_path: Path to the user base config file
+    :param default: Path to be preppended as the default config file embedded
+                    in the app
     :param paths: Extra paths to add to the parsing after the defaults
     :param force_extension: only read files with given extension.
     :returns: Single dict with all the loaded config
     """
-    paths = [file_path, dir_path, user_file_path, user_dir_path]
-    paths += kwargs.pop('paths', None) or []
-    return load_paths([path for path in paths if path], **kwargs)
+    files = [default, file_path, dir_path, user_file_path, user_dir_path]
+    files += (paths or [])
+    return load_paths([path for path in files if path], **kwargs)
 
 
 def load_paths(paths, finder=None, extension=None,
