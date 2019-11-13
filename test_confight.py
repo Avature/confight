@@ -315,6 +315,20 @@ class TestLoadApp(LoadAppBehaviour):
             '/etc/myapp/config.toml', '/etc/myapp/conf.d',
         ))
 
+    def test_it_should_be_able_to_ignore_file(self):
+        config = self.load_app('myapp', file_path=None)
+
+        assert_that(self.loaded_paths(config), contains(
+            '/etc/myapp/conf.d',
+        ))
+
+    def test_it_should_be_able_to_ignore_directory(self):
+        config = self.load_app('myapp', dir_path=None)
+
+        assert_that(self.loaded_paths(config), contains(
+            '/etc/myapp/config.toml',
+        ))
+
     def test_it_should_load_extra_paths(self):
         config = self.load_app('myapp', paths=['/extra/path'])
 
@@ -355,6 +369,7 @@ class TestLoadApp(LoadAppBehaviour):
         assert_that(self.loaded_paths(config), contains(
             '/my/path/config.toml', '/my/path/conf.d',
         ))
+
 
     def load_app(self, *args, **kwargs):
         return self.call_config_loader(load_app, *args, **kwargs)
