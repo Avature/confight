@@ -8,7 +8,6 @@ import json
 import logging
 import argparse
 import itertools
-import pkg_resources
 from collections import OrderedDict
 try:
     from ConfigParser import ConfigParser
@@ -244,6 +243,7 @@ def format_from_path(path):
 
 
 def get_version():
+    import pkg_resources
     return 'confight ' + pkg_resources.get_distribution('confight').version
 
 
