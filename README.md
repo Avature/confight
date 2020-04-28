@@ -349,6 +349,19 @@ Install the application and run tests in development:
 Changelog
 =========
 
+* 1.3.1 (2020-04-28)
+
+  * [f6183081] Adds tests for ignore load file behaviour
+  * [9686602f] Import pkg_resources only when needed
+  * [7e7cbe5c] Update README with optional dependencies
+  * [a766b09f] Pin hamcrest version to be python3.5 compatible
+
+* 1.3 (2019-09-19)
+
+  * [995d00f6] Adds a default config parameter for the load_app family of functions
+  * [a99f3604] Deprecate support for Python 3.4
+  * [f73a8931] Add setuptools to dependencies
+
 * 1.2.3 (2019-02-25)
 
   * [c1f5c919] Show missing file warnings as debug info
