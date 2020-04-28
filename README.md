@@ -8,7 +8,7 @@ confight
 One simple way of parsing configs
 
 - Extensible "*Unix-like*" `conf.d` directory
-- Allow for multiple formats (*toml*, *json*, *yaml*, *ini*)
+- Allow for [multiple formats](#formats) (*toml*, *json*, *yaml*, *ini*)
 - Full unicode support
 - User settings `~/.config` support
 - Nice out-of-the-box defaults
@@ -26,6 +26,14 @@ Those extra files are called *droplets* which consist in is a small config
 file that is *"dropped"* into a `conf.d` directory where they will be parsed
 and merged nicely into a single final configuration.
 
+This approach is very common in Unix and used in several applications such as:
+
+- cron (`/etc/cron.d`)
+- bash profiles (`/etc/profile.d`)
+- apt (`/etc/apt/sources.list.d`)
+- systemd
+- and many others.
+
 The idea is to "*map reduce*" configurations, by parsing all files *in order*,
 giving more relevance to the latest appearance and then merge them into a
 *single config* that holds all the data:
@@ -41,13 +49,14 @@ giving more relevance to the latest appearance and then merge them into a
 The name of those files will determine the order in which they're parsed and
 the priority their values will have when merging. The last one wins.
 
-This approach is very common in Unix and used in cron (`/etc/cron.d`), bash
-profiles (`/etc/profile.d`), apt (`/etc/apt/sources.list.d`), systemd and many
-others. Is specially good for externally managed configs or *debian-packaged*
+1. /etc/app/config.toml
+2. /etc/app/conf.d/*
+3. ~/.config/app/config.toml
+4. ~/.config/app/conf.d/*
+
+Is specially good for externally managed configs or *debian-packaged*
 applications, avoiding clashes between installed files and generated configs,
-avoiding changes that would stay forever unless manually merged (Yes, I've
-said 💩MANUALLY💩💩Placing new files in `conf.d`, application configuration
-can change be extended and overriden without getting dirty.
+for changes that would stay forever unless manually merged.
 
 ## Usage
 
@@ -107,6 +116,24 @@ the `/etc/myapp/config.json` file.
 All files in the `conf.d` directory are read by default regardless the
 extension. To enforce that only `.extension` files are read, add the
 `force_extension` flag.
+
+## Formats
+
+Some formats are _builtin_ in the default installation and some others are
+_optional_ and must be declared when installing _confight_.
+
+The list of _builtin_ file formats:
+
+- [toml](https://pypi.org/project/toml/) (_default_)
+- json
+- ini
+
+The list of _optional_ file formats:
+
+- [yaml](https://pypi.org/project/ruamel.yaml/)
+
+In order to install confight with _optional_ formats see
+[installation](#installation) with [optional features][].
 
 ## Parsing
 
@@ -302,9 +329,11 @@ Install it via pip using:
 
     pip install confight
 
-Also with *yaml* support:
+Also with *yaml* support using [optional features][]:
 
     pip install confight[yaml]
+
+[optional features]: https://setuptools.readthedocs.io/en/latest/setuptools.html#declaring-extras-optional-features-with-their-own-dependencies
 
 ## Development
 
