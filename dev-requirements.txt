@@ -1,4 +1,4 @@
-pyHamcrest
+pyHamcrest==1.10.1
 pytest
 mock; python_version < '3.6'
 subprocess32; python_version < '3'
