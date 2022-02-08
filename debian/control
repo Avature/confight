@@ -1,7 +1,7 @@
 Source: confight
 Section: devel
 Priority: extra
-Maintainer: Devops <devops@avature.net>
+Maintainer: Platform Operability <platform.operability@avature.net>
 Standards-Version: 4.0.0
 Build-Depends: debhelper (>= 9),
                dh-python,

@@ -20,7 +20,7 @@ echo "Running tests"
 tox --recreate > /dev/null
 gbp dch \
     --new-version $VERSION \
-    --distribution unstable \
+    --distribution $(lsb_release -sc) \
     --debian-tag="%(version)s"\
     --no-git-author\
     --id-length=8\
