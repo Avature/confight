@@ -1,3 +1,10 @@
+confight (1.3.2) Ubuntu; urgency=medium
+
+  * [241dca89] Update ownership to Platform Operability
+  * [96a1def0] fix(setup): Freeze version of `ruamel.yaml`
+
+ -- Frank Lenormand <frank.lenormand@avature.net>  Wed, 25 Oct 2023 16:49:30 +0200
+
 confight (1.3.1) unstable; urgency=medium
 
   * [f6183081] Adds tests for ignore load file behaviour
