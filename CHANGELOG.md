@@ -1,6 +1,18 @@
 # Changelog
 
 
+### 1.3.2 (2023-10-25)
+
+  * [241dca89] Update ownership to Platform Operability
+  * [96a1def0] fix(setup): Freeze version of `ruamel.yaml`
+
+### 1.3.1 (2020-04-28)
+
+  * [f6183081] Adds tests for ignore load file behaviour
+  * [9686602f] Import pkg_resources only when needed
+  * [7e7cbe5c] Update README with optional dependencies
+  * [a766b09f] Pin hamcrest version to be python3.5 compatible
+
 ### 1.3 (2019-09-19)
 
   * [995d00f6] Adds a default config parameter for the load_app family of functions
