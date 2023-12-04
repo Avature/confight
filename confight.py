@@ -214,12 +214,13 @@ FORMAT_LOADERS = {
 
 # Optional dependency yaml
 try:
-    import ruamel.yaml as yaml
+    from ruamel.yaml import YAML
 except ImportError:
     pass
 else:
     def load_yaml(stream):
-        return yaml.load(stream, Loader=yaml.RoundTripLoader)
+        yaml = YAML(typ="rt")
+        return yaml.load(stream)
 
     FORMATS = FORMATS + ('yaml',)
     FORMAT_EXTENSIONS.update({
@@ -228,6 +229,23 @@ else:
     })
     FORMAT_LOADERS.update({
         'yaml': load_yaml
+    })
+
+# Optional dependency HCL
+try:
+    import hcl
+except ImportError:
+    pass
+else:
+    def load_hcl(stream):
+        return hcl.load(stream)
+
+    FORMATS = FORMATS + ('hcl',)
+    FORMAT_EXTENSIONS.update({
+        'hcl': 'hcl'
+    })
+    FORMAT_LOADERS.update({
+        'hcl': load_hcl
     })
 
 

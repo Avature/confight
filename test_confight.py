@@ -28,6 +28,8 @@ FILES = [
 ]
 if "yaml" in FORMATS:
     FILES.extend(["basic_file.yaml", "basic_file.yml"])
+if "hcl" in FORMATS:
+    FILES.extend(["basic_file.hcl"])
 
 INVALID_FILES = [
     'invalid.toml', 'invalid.ini', 'invalid.json', 'invalid.cfg', 'invalid.js'
@@ -589,6 +591,17 @@ section:
         - fourth
     unicode: "💩"
 """,
+        'basic_file.hcl': u"""
+    section {
+        string = "hcl"
+        integer = 3
+        float = 3.5
+        boolean = false
+        "null" = null
+        list = [ third, fourth ]
+        unicode = "💩"
+    }
+    """,
         'invalid.toml': """
 [section]
 key = null
@@ -627,3 +640,5 @@ key = second
     _contents['bad_ext.u'] = _contents['basic_file.yaml']
     _contents['basic_file_yaml'] = _contents['basic_file.yaml']
     _contents['basic_file.yml'] = _contents['basic_file.yaml']
+    _contents['basic_file_hcl'] = _contents['basic_file.hcl']
+
