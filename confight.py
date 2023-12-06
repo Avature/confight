@@ -214,13 +214,12 @@ FORMAT_LOADERS = {
 
 # Optional dependency yaml
 try:
-    from ruamel.yaml import YAML
+    import ruamel.yaml as yaml
 except ImportError:
     pass
 else:
     def load_yaml(stream):
-        yaml = YAML(typ="rt")
-        return yaml.load(stream)
+        return yaml.load(stream, Loader=yaml.RoundTripLoader)
 
     FORMATS = FORMATS + ('yaml',)
     FORMAT_EXTENSIONS.update({
