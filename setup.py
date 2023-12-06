@@ -26,7 +26,7 @@ setup(
     install_requires=io.open('requirements.txt').read().splitlines(),
     extras_require={
         'yaml': ["ruamel.yaml==0.17.40"],
-        'hcl': ["pyhcl==0.4.5"],
+        'hcl': ["pyhcl"],
     },
     entry_points={
         'console_scripts': [
