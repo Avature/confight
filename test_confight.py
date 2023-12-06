@@ -11,7 +11,7 @@ except ImportError:
 
 import pytest
 from hamcrest import (assert_that, has_entry, has_key, has_entries, is_, empty,
-                      only_contains, contains, contains_string)
+                      only_contains, contains_exactly, contains_string)
 
 from confight import (parse, merge, find, load, load_paths, load_app,
                       load_user_app, FORMATS)
@@ -160,14 +160,14 @@ class TestFind(object):
 
         found = find(path)
 
-        assert_that(found, contains(__file__))
+        assert_that(found, contains_exactly(__file__))
 
     def test_it_should_load_existing_files(self, examples):
         path = examples.get(FILES[0])
 
         found = find(path)
 
-        assert_that(found, contains(path))
+        assert_that(found, contains_exactly(path))
 
     def test_it_should_expand_user_variables(self, tmpdir, examples):
         path = examples.get(FILES[0])
@@ -176,7 +176,7 @@ class TestFind(object):
 
         found = find(relpath)
 
-        assert_that(found, contains(path))
+        assert_that(found, contains_exactly(path))
 
     def test_it_should_return_nothing_for_missing_directories(self):
         assert_that(find('/path/to/nowhere'), is_(empty()))
@@ -209,7 +209,7 @@ class TestFind(object):
 
         found = find(executable_file)
 
-        assert_that(found, contains(executable_file))
+        assert_that(found, contains_exactly(executable_file))
         logger.warning.assert_called()
 
 
@@ -284,7 +284,7 @@ class TestLoadPaths(object):
             'subsection', 'null'
         ]
 
-        assert_that(config["section"].keys(), contains(*good_data))
+        assert_that(config["section"].keys(), contains_exactly(*good_data))
 
 
 class LoadAppBehaviour(object):
@@ -313,35 +313,35 @@ class TestLoadApp(LoadAppBehaviour):
     def test_it_should_load_from_default_path(self):
         config = self.load_app('myapp')
 
-        assert_that(self.loaded_paths(config), contains(
+        assert_that(self.loaded_paths(config), contains_exactly(
             '/etc/myapp/config.toml', '/etc/myapp/conf.d',
         ))
 
     def test_it_should_be_able_to_ignore_file(self):
         config = self.load_app('myapp', file_path=None)
 
-        assert_that(self.loaded_paths(config), contains(
+        assert_that(self.loaded_paths(config), contains_exactly(
             '/etc/myapp/conf.d',
         ))
 
     def test_it_should_be_able_to_ignore_directory(self):
         config = self.load_app('myapp', dir_path=None)
 
-        assert_that(self.loaded_paths(config), contains(
+        assert_that(self.loaded_paths(config), contains_exactly(
             '/etc/myapp/config.toml',
         ))
 
     def test_it_should_load_extra_paths(self):
         config = self.load_app('myapp', paths=['/extra/path'])
 
-        assert_that(self.loaded_paths(config), contains(
+        assert_that(self.loaded_paths(config), contains_exactly(
             '/etc/myapp/config.toml', '/etc/myapp/conf.d', '/extra/path'
         ))
 
     def test_it_should_add_default_as_priority_location(self):
         config = self.load_app('myapp', default='/path/to/default')
 
-        assert_that(self.loaded_paths(config), contains(
+        assert_that(self.loaded_paths(config), contains_exactly(
             '/path/to/default',
             '/etc/myapp/config.toml',
             '/etc/myapp/conf.d',
@@ -350,7 +350,7 @@ class TestLoadApp(LoadAppBehaviour):
     def test_it_should_allow_using_known_extensions(self):
         config = self.load_app('myapp', extension='json')
 
-        assert_that(self.loaded_paths(config), contains(
+        assert_that(self.loaded_paths(config), contains_exactly(
             '/etc/myapp/config.json', '/etc/myapp/conf.d',
         ))
 
@@ -361,14 +361,14 @@ class TestLoadApp(LoadAppBehaviour):
     def test_it_should_allow_using_custom_extensions_with_format(self):
         config = self.load_app('myapp', extension='jsn', format='json')
 
-        assert_that(self.loaded_paths(config), contains(
+        assert_that(self.loaded_paths(config), contains_exactly(
             '/etc/myapp/config.jsn', '/etc/myapp/conf.d',
         ))
 
     def test_it_should_use_prefix_for_default_locations(self):
         config = self.load_app('myapp', prefix='/my/path')
 
-        assert_that(self.loaded_paths(config), contains(
+        assert_that(self.loaded_paths(config), contains_exactly(
             '/my/path/config.toml', '/my/path/conf.d',
         ))
 
@@ -381,7 +381,7 @@ class TestLoadUserApp(LoadAppBehaviour):
     def test_it_should_load_from_default_user_path(self):
         config = self.load_app('myapp')
 
-        assert_that(self.loaded_paths(config), contains(
+        assert_that(self.loaded_paths(config), contains_exactly(
             '/etc/myapp/config.toml',
             '/etc/myapp/conf.d',
             '~/.config/myapp/config.toml',
@@ -391,7 +391,7 @@ class TestLoadUserApp(LoadAppBehaviour):
     def test_it_should_load_extra_paths(self):
         config = self.load_app('myapp', paths=['/extra/path'])
 
-        assert_that(self.loaded_paths(config), contains(
+        assert_that(self.loaded_paths(config), contains_exactly(
             '/etc/myapp/config.toml',
             '/etc/myapp/conf.d',
             '~/.config/myapp/config.toml',
@@ -402,7 +402,7 @@ class TestLoadUserApp(LoadAppBehaviour):
     def test_it_should_allow_using_known_extensions(self):
         config = self.load_app('myapp', extension='json')
 
-        assert_that(self.loaded_paths(config), contains(
+        assert_that(self.loaded_paths(config), contains_exactly(
             '/etc/myapp/config.json',
             '/etc/myapp/conf.d',
             '~/.config/myapp/config.json',
@@ -416,7 +416,7 @@ class TestLoadUserApp(LoadAppBehaviour):
     def test_it_should_allow_using_custom_extensions_with_format(self):
         config = self.load_app('myapp', extension='jsn', format='json')
 
-        assert_that(self.loaded_paths(config), contains(
+        assert_that(self.loaded_paths(config), contains_exactly(
             '/etc/myapp/config.jsn',
             '/etc/myapp/conf.d',
             '~/.config/myapp/config.jsn',
@@ -426,7 +426,7 @@ class TestLoadUserApp(LoadAppBehaviour):
     def test_it_should_use_prefix_for_default_locations(self):
         config = self.load_app('myapp', prefix='/my/path')
 
-        assert_that(self.loaded_paths(config), contains(
+        assert_that(self.loaded_paths(config), contains_exactly(
             '/my/path/config.toml',
             '/my/path/conf.d',
             '~/.config/myapp/config.toml',
@@ -436,7 +436,7 @@ class TestLoadUserApp(LoadAppBehaviour):
     def test_it_should_use_prefix_for_default_user_locations(self):
         config = self.load_app('myapp', user_prefix='/my/path')
 
-        assert_that(self.loaded_paths(config), contains(
+        assert_that(self.loaded_paths(config), contains_exactly(
             '/etc/myapp/config.toml',
             '/etc/myapp/conf.d',
             '/my/path/config.toml',
