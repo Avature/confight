@@ -25,7 +25,7 @@ setup(
     py_modules=['confight'],
     install_requires=io.open('requirements.txt').read().splitlines(),
     extras_require={
-        'yaml': ["ruamel.yaml"],
+        'yaml': ["ruamel.yaml>=0.18.0"],
     },
     entry_points={
         'console_scripts': [
@@ -33,10 +33,6 @@ setup(
         ]
     },
     classifiers=(
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
