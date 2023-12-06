@@ -25,7 +25,7 @@ setup(
     py_modules=['confight'],
     install_requires=io.open('requirements.txt').read().splitlines(),
     extras_require={
-        'yaml': ["ruamel.yaml"],
+        'yaml': ["ruamel.yaml>=0.18.0"],
         'hcl': ["pyhcl"],
     },
     entry_points={
