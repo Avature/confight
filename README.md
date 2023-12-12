@@ -354,6 +354,20 @@ Install the application and run tests in development:
 Changelog
 =========
 
+* 1.4.0 (2023-12-12)
+
+  [ Federico Fapitalle ]
+  * [3e618f3b] feat: adds support for HCL languaje
+
+  [ Frank Lenormand ]
+  * [a9b3b9a2] fix(confight): Stick to older `ruamel.yaml` API
+  * [4de6a3ff] fix(setup): Do not freeze `pyhcl` package version
+
+* 1.3.2 (2023-10-25)
+
+  * [241dca89] Update ownership to Platform Operability
+  * [96a1def0] fix(setup): Freeze version of `ruamel.yaml`
+
 * 1.3.1 (2020-04-28)
 
   * [f6183081] Adds tests for ignore load file behaviour

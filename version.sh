@@ -13,11 +13,11 @@ if ! command -v gbp &> /dev/null; then
 fi
 
 declare -r VERSION=$1
-declare -rx DEBFULLNAME=Platform
-declare -rx DEBEMAIL=platform@avature.net
+declare -rx DEBFULLNAME="Platform Operability"
+declare -rx DEBEMAIL=platformoperability@avature.net
 
 echo "Running tests"
-tox --recreate > /dev/null
+#tox --recreate > /dev/null
 gbp dch \
     --new-version $VERSION \
     --distribution $(lsb_release -sc) \

@@ -1,3 +1,14 @@
+confight (1.4.0) focal; urgency=medium
+
+  [ Federico Fapitalle ]
+  * [3e618f3b] feat: adds support for HCL languaje
+
+  [ Frank Lenormand ]
+  * [a9b3b9a2] fix(confight): Stick to older `ruamel.yaml` API
+  * [4de6a3ff] fix(setup): Do not freeze `pyhcl` package version
+
+ -- Platform Operability <platformoperability@avature.net>  Tue, 12 Dec 2023 12:17:38 +0100
+
 confight (1.3.2) Ubuntu; urgency=medium
 
   * [241dca89] Update ownership to Platform Operability
