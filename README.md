@@ -131,6 +131,7 @@ The list of _builtin_ file formats:
 The list of _optional_ file formats:
 
 - [yaml](https://pypi.org/project/ruamel.yaml/)
+- [hcl](https://github.com/hashicorp/hcl)
 
 In order to install confight with _optional_ formats see
 [installation](#installation) with [optional features][].
@@ -332,6 +333,10 @@ Install it via pip using:
 Also with *yaml* support using [optional features][]:
 
     pip install confight[yaml]
+
+Similarly, for *hcl* support:
+
+    pip install confight[hcl]
 
 [optional features]: https://setuptools.readthedocs.io/en/latest/setuptools.html#declaring-extras-optional-features-with-their-own-dependencies
 

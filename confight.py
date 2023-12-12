@@ -230,6 +230,23 @@ else:
         'yaml': load_yaml
     })
 
+# Optional dependency HCL
+try:
+    import hcl
+except ImportError:
+    pass
+else:
+    def load_hcl(stream):
+        return hcl.load(stream)
+
+    FORMATS = FORMATS + ('hcl',)
+    FORMAT_EXTENSIONS.update({
+        'hcl': 'hcl'
+    })
+    FORMAT_LOADERS.update({
+        'hcl': load_hcl
+    })
+
 
 def format_from_path(path):
     """Get file format from a given path based on exension"""
