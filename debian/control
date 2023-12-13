@@ -12,14 +12,6 @@ Build-Depends: debhelper (>= 9),
                pandoc (>= 1.9),
                tox
 
-Package: python-confight
-Architecture: all
-Depends: ${python:Depends}, ${misc:Depends}, python-toml, python-setuptools
-Suggests: python-ruamel.yaml
-Description: Common config loading for Python and the command line
- .
- This package installs the library for Python 2.
-
 Package: python3-confight
 Architecture: all
 Depends: ${python3:Depends}, ${misc:Depends}, python3-toml, python3-setuptools

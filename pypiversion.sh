@@ -3,8 +3,6 @@ echo "Cleaning dist directory"
 rm -f dist/*
 
 echo "Building python packages"
-python setup.py sdist
-python setup.py bdist_wheel
 python3 setup.py bdist_wheel
 echo "Generated python packages"
 
