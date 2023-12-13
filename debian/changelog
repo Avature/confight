@@ -1,3 +1,10 @@
+confight (2.0) focal; urgency=medium
+
+  * [dd040ae2] feat(confight): Only support Python v3.8+
+  * [266de3d4] chore(confight): Drop support for Python v2
+
+ -- Platform Operability <platformoperability@avature.net>  Wed, 13 Dec 2023 15:56:27 +0100
+
 confight (1.4.0) focal; urgency=medium
 
   [ Federico Fapitalle ]

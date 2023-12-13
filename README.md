@@ -354,6 +354,11 @@ Install the application and run tests in development:
 Changelog
 =========
 
+* 2.0 (2023-12-13)
+
+  * [dd040ae2] feat(confight): Only support Python v3.8+
+  * [266de3d4] chore(confight): Drop support for Python v2
+
 * 1.4.0 (2023-12-12)
 
   [ Federico Fapitalle ]
