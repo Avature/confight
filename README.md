@@ -354,6 +354,10 @@ Install the application and run tests in development:
 Changelog
 =========
 
+* 2.0.0-1 (2023-12-14)
+
+  * [43093b8e] Avoid overriding confight binary in debian package
+
 * 2.0 (2023-12-13)
 
   * [dd040ae2] feat(confight): Only support Python v3.8+
