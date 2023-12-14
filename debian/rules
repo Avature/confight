@@ -5,21 +5,18 @@ export PYBUILD_NAME=confight
 DESTDIR3:=debian/python3-confight
 
 %:
-	dh $@ --with python3 --buildsystem=pybuild --tests-pytest
+	dh $@ --with python3 --buildsystem=pybuild
 
 override_dh_installman:
 	cat docs/man-header.md README.md | \
-	  pandoc --standalone -f markdown -t man | \
-	  tee docs/confight.1 > docs/confight3.1
+	  pandoc --standalone -f markdown -t man > docs/confight.1
 	dh_installman --package python3-confight docs/confight.1
-	dh_installman --package python3-confight docs/confight3.1
 
 override_dh_compress:
 	dh_compress --exclude=README.md
 
 override_dh_auto_install:
 	dh_auto_install
-	cd $(DESTDIR3)/usr/bin && mv confight confight3
 
 override_dh_clean:
 	rm -f docs/confight.1
