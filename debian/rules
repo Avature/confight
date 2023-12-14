@@ -19,7 +19,7 @@ override_dh_compress:
 
 override_dh_auto_install:
 	dh_auto_install
-	cd $(DESTDIR3)/usr/bin && cp confight confight3
+	cd $(DESTDIR3)/usr/bin && mv confight confight3
 
 override_dh_clean:
 	rm -f docs/confight.1
