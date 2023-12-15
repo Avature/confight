@@ -354,6 +354,11 @@ Install the application and run tests in development:
 Changelog
 =========
 
+* 2.0.0-2 (2023-12-15)
+
+  * [d132d679] hotfix: Finish removing Python v2 metadata
+  * [368c1b64] fix(debian.rules): Keep the `confight3` nomenclature
+
 * 2.0.0-1 (2023-12-14)
 
   * [43093b8e] Avoid overriding confight binary in debian package

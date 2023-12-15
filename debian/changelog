@@ -1,3 +1,10 @@
+confight (2.0.0-2) focal; urgency=medium
+
+  * [d132d679] hotfix: Finish removing Python v2 metadata
+  * [368c1b64] fix(debian.rules): Keep the `confight3` nomenclature
+
+ -- Platform Operability <platformoperability@avature.net>  Fri, 15 Dec 2023 10:44:13 +0100
+
 confight (2.0.0-1) focal; urgency=medium
 
   * [43093b8e] Avoid overriding confight binary in debian package
