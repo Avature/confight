@@ -24,7 +24,7 @@ from hamcrest import (
 )
 
 from confight import (
-    FORMATS,
+    FORMAT_LOADERS,
     find,
     load,
     load_app,
@@ -32,6 +32,8 @@ from confight import (
     load_user_app,
     merge,
     parse,
+    register_extension,
+    register_format,
 )
 
 
@@ -40,18 +42,30 @@ def examples(tmpdir):
     return Repository(tmpdir)
 
 
-FILES = ["basic_file.toml", "basic_file.ini", "basic_file.json", "basic_file.cfg", "basic_file.js"]
-if "yaml" in FORMATS:
+FILES = [
+    "basic_file.toml",
+    "basic_file.ini",
+    "basic_file.json",
+    "basic_file.cfg",
+    "basic_file.js",
+]
+if "yaml" in FORMAT_LOADERS:
     FILES.extend(["basic_file.yaml", "basic_file.yml"])
-if "hcl" in FORMATS:
+if "hcl" in FORMAT_LOADERS:
     FILES.extend(["basic_file.hcl"])
 
-INVALID_FILES = ["invalid.toml", "invalid.ini", "invalid.json", "invalid.cfg", "invalid.js"]
+INVALID_FILES = [
+    "invalid.toml",
+    "invalid.ini",
+    "invalid.json",
+    "invalid.cfg",
+    "invalid.js",
+]
 INVALID_EXTENSIONS = ["bad_ext.ext", "bad_ext.j"]
 SORTED_FILES = ["00_base.toml", "01_first.json", "AA_second.ini"]
 
 
-class TestParse(object):
+class TestParse:
     @pytest.mark.parametrize("name", FILES)
     def test_it_should_detect_format_from_extension(self, name, examples):
         config = parse(examples.get(name))
@@ -92,7 +106,7 @@ class TestParse(object):
             parse(examples.get(name))
 
 
-class TestMerge(object):
+class TestMerge:
     def test_it_should_give_priority_to_last_value(self):
         configs = [
             {"key": 1},
@@ -134,7 +148,8 @@ class TestMerge(object):
         result = merge(configs)
 
         assert_that(
-            result, has_entry("section", has_entry("lv1", has_entry("lv2", has_entry("lv3", 3))))
+            result,
+            has_entry("section", has_entry("lv1", has_entry("lv2", has_entry("lv3", 3)))),
         )
 
     def test_it_should_ignore_scalar_values_given_as_configs(self):
@@ -151,7 +166,7 @@ class TestMerge(object):
         assert_that(result, has_entry("section", has_entry("key", 3)))
 
 
-class TestFind(object):
+class TestFind:
     def test_it_should_load_files_in_order(self, examples):
         examples.clear()
         expected_files = sorted(examples.get_many(SORTED_FILES))
@@ -226,7 +241,7 @@ class TestFind(object):
         logger.warning.assert_called()
 
 
-class TestLoad(object):
+class TestLoad:
     def test_it_should_load_and_merge_lists_of_paths(self, examples):
         paths = sorted(examples.get_many(SORTED_FILES))
 
@@ -262,7 +277,7 @@ class TestLoad(object):
         assert_that(config, only_contains(has_key("section")))
 
 
-class TestLoadPaths(object):
+class TestLoadPaths:
     def test_it_should_load_from_file_and_directory(self, examples):
         examples.clear()
         paths = sorted(examples.get_many(SORTED_FILES))
@@ -302,7 +317,7 @@ class TestLoadPaths(object):
         assert_that(config["section"].keys(), contains_exactly(*good_data))
 
 
-class LoadAppBehaviour(object):
+class LoadAppBehaviour:
     def loaded_paths(self, config):
         return sorted(config, key=lambda k: config[k])
 
@@ -506,7 +521,7 @@ class TestLoadUserApp(LoadAppBehaviour):
         return self.call_config_loader(load_user_app, *args, **kwargs)
 
 
-class TestCli(object):
+class TestCli:
     def test_it_should_print_help(self):
         out = subprocess.run([self.bin], stderr=subprocess.PIPE)
 
@@ -569,7 +584,7 @@ if getattr(subprocess, "run", None) is None:
     subprocess.run = maimed_run
 
 
-class Repository(object):
+class Repository:
     def __init__(self, tmpdir):
         self.tmpdir = tmpdir
 
@@ -696,3 +711,62 @@ key = second
     _contents["basic_file_yaml"] = _contents["basic_file.yaml"]
     _contents["basic_file.yml"] = _contents["basic_file.yaml"]
     _contents["basic_file_hcl"] = _contents["basic_file.hcl"]
+
+
+def function(path):
+    return {}
+
+
+def function2(path):
+    return {}
+
+
+class TestRegister:
+    def test_it_should_add_a_new_format(self):
+        register = {}
+
+        register_format("test", function, _loaders=register)
+
+        assert_that(register, has_entry("test", function))
+
+    def test_it_should_fail_with_existing_formats(self):
+        register = {"test": function}
+
+        with pytest.raises(ValueError):
+            register_format("test", function, _loaders=register)
+
+    def test_it_should_override_existing_formats(self):
+        register = {"test": function}
+
+        register_format("test", function2, override=True, _loaders=register)
+
+        assert_that(register, has_entry("test", function2))
+
+    def test_it_should_register_new_extensions(self):
+        loaders = {"test": function}
+        extensions = {}
+
+        register_extension("t", format="test", _loaders=loaders, _extensions=extensions)
+
+        assert_that(extensions, has_entry("t", "test"))
+
+    def test_it_should_fail_to_register_missing_formats(self):
+        with pytest.raises(ValueError):
+            register_extension("t", format="test", _loaders={}, _extensions={})
+
+    def test_it_should_fail_with_existing_aliases(self):
+        loaders = {"test": lambda path: {}}
+        extensions = {"t": "test"}
+
+        with pytest.raises(ValueError):
+            register_extension("t", format="test", _loaders=loaders, _extensions=extensions)
+
+    def test_it_should_override_existing_aliases(self):
+        loaders = {"test1": lambda path: {}, "test2": lambda path: {}}
+        extensions = {"t": "test"}
+
+        register_extension(
+            "t", format="test2", override=True, _loaders=loaders, _extensions=extensions
+        )
+
+        assert_that(extensions, has_entry("t", "test2"))

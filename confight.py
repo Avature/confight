@@ -127,11 +127,10 @@ def parse(path, format=None):
     """
     format = format_from_path(path) if format is None else format
     logger.info("Parsing %r config file from %r", format, path)
-    if format not in FORMATS:
+    if format not in FORMAT_LOADERS:
         raise ValueError("Unknown format {} for file {}".format(format, path))
     loader = FORMAT_LOADERS[format]
-    with io.open(path, "r", encoding="utf8") as stream:
-        return loader(stream)
+    return loader(path)
 
 
 def merge(configs):
@@ -191,16 +190,35 @@ def check_access(path):
     return True
 
 
-def load_ini(stream):
+def open_text(path):
+    return io.open(path, mode="r", encoding="utf8")
+
+
+def open_bin(path):
+    return io.open(path, mode="rb", encoding="utf8")
+
+
+def load_json(path):
+    with open_text(path) as stream:
+        return json.load(stream, object_pairs_hook=OrderedDict)
+
+
+def load_toml(path):
+    with open_text(path) as stream:
+        return toml.load(stream, _dict=OrderedDict)
+
+
+def load_ini(path):
     if "ExtendedInterpolation" in globals():
         parser = ConfigParser(interpolation=ExtendedInterpolation())
     else:
         parser = ConfigParser()
-    parser.read_file(stream)
+    with open_text(path) as stream:
+        parser.read_file(stream)
     return {section: OrderedDict(parser.items(section)) for section in parser.sections()}
 
 
-FORMATS = ("toml", "ini", "json")
+FORMAT_LOADERS = {"json": load_json, "toml": load_toml, "ini": load_ini}
 FORMAT_EXTENSIONS = {
     "js": "json",
     "json": "json",
@@ -208,11 +226,26 @@ FORMAT_EXTENSIONS = {
     "ini": "ini",
     "cfg": "ini",
 }
-FORMAT_LOADERS = {
-    "json": lambda *args: json.load(*args, object_pairs_hook=OrderedDict),
-    "toml": lambda *args: toml.load(*args, _dict=OrderedDict),
-    "ini": load_ini,
-}
+
+
+def register_format(name, function, override=False, _loaders=FORMAT_LOADERS):
+    if not override and name in _loaders:
+        raise ValueError("Format already registered: {}".format(name))
+    _loaders[name] = function
+
+
+def register_extension(
+    alias,
+    format,
+    override=False,
+    _loaders=FORMAT_LOADERS,
+    _extensions=FORMAT_EXTENSIONS,
+):
+    if format not in _loaders:
+        raise ValueError("Format does not exists: {}".format(format))
+    if not override and alias in _extensions:
+        raise ValueError("Format extension already registered: {}".format(alias))
+    _extensions[alias] = format
 
 
 # Optional dependency yaml
@@ -222,13 +255,14 @@ except ImportError:
     pass
 else:
 
-    def load_yaml(stream):
-        yaml = YAML(typ="rt")
-        return yaml.load(stream)
+    def load_yaml(path):
+        with open_text(path) as stream:
+            yaml = YAML(typ="rt")
+            return yaml.load(stream)
 
-    FORMATS = FORMATS + ("yaml",)
-    FORMAT_EXTENSIONS.update({"yml": "yaml", "yaml": "yaml"})
-    FORMAT_LOADERS.update({"yaml": load_yaml})
+    register_format("yaml", load_yaml)
+    register_extension("yaml", format="yaml")
+    register_extension("yml", format="yaml")
 
 # Optional dependency HCL
 try:
@@ -237,12 +271,12 @@ except ImportError:
     pass
 else:
 
-    def load_hcl(stream):
-        return hcl.load(stream)
+    def load_hcl(path):
+        with open_text(path) as stream:
+            return hcl.load(stream)
 
-    FORMATS = FORMATS + ("hcl",)
-    FORMAT_EXTENSIONS.update({"hcl": "hcl"})
-    FORMAT_LOADERS.update({"hcl": load_hcl})
+    register_format("hcl", load_hcl)
+    register_extension("hcl", format="hcl")
 
 
 def format_from_path(path):
@@ -276,7 +310,11 @@ def cli():
     parser = argparse.ArgumentParser(description="One simple way of parsing configs")
     parser.add_argument("--version", action="version", version=get_version())
     parser.add_argument(
-        "-v", "--verbose", choices=LOG_LEVELS, default="ERROR", help="Logging level default: ERROR"
+        "-v",
+        "--verbose",
+        choices=LOG_LEVELS,
+        default="ERROR",
+        help="Logging level default: ERROR",
     )
     subparsers = parser.add_subparsers(title="subcommands", dest="command")
     show_parser = subparsers.add_parser("show")

@@ -136,6 +136,29 @@ The list of _optional_ file formats:
 In order to install confight with _optional_ formats see
 [installation](#installation) with [optional features][].
 
+## Custom Formats
+
+Other formats can be registered by name providing a function with the loader signature
+`loader(path)`.
+
+```python
+from confight import register_loader, register_extension
+
+def load_assign(path):
+    """Parse files with KEY=VALUE lines """
+    with open(path, 'r') as stream:
+        return dict(line.split('=', 1) for line in stream]
+
+register_loader('equal', load_assign)
+```
+
+Extensions can also be associated to previously registered formats by adding them to the extension
+register as alias so it automatically detects with `.eq` extension:
+
+```python
+register_extension('eq', format='equal')
+```
+
 ## Parsing
 
 Given a path to an existing configuration file, it will be loaded in memory
@@ -151,7 +174,7 @@ confight.parse('/path/to/config', format='toml')
 When no format is given, it tries to guess by looking at file extensions:
 
 ```
-confight.parse('/path/to/config.json')  # will gess json format
+confight.parse('/path/to/config.json')  # will guess json format
 ```
 
 You can see the list of all available extensions at `confight.FORMAT_EXTENSIONS`.
@@ -375,7 +398,7 @@ Changelog
 * 1.4.0 (2023-12-12)
 
   [ Federico Fapitalle ]
-  * [3e618f3b] feat: adds support for HCL languaje
+  * [3e618f3b] feat: adds support for HCL language
 
   [ Frank Lenormand ]
   * [a9b3b9a2] fix(confight): Stick to older `ruamel.yaml` API
@@ -469,4 +492,3 @@ Changelog
 * 0.0.1 (2018-03-27)
 
   * Initial release.
-
