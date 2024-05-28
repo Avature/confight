@@ -351,6 +351,10 @@ Install the application and run tests in development:
     pip install -e .
     python -m pytest
 
+Make sure to install pre-commit before checking in any changes:
+
+    pre-commit install
+
 Changelog
 =========
 
