@@ -1,23 +1,23 @@
 """Write README changelog section from debian Changelog section"""
 from __future__ import print_function
 
-import io
-import re
 import datetime
 import email.utils
+import io
+import re
 
 
 def write_changelog():
-    with io.open('README.md', 'r+', encoding='utf8') as stream:
+    with io.open("README.md", "r+", encoding="utf8") as stream:
         remove_old_changelog(stream)
         stream.writelines(get_changes())
 
 
 def get_changes():
-    with io.open('debian/changelog', encoding='utf8') as stream:
-        yield u"\n"
+    with io.open("debian/changelog", encoding="utf8") as stream:
+        yield "\n"
         for change in parse_changelog(stream):
-            yield u"* {version} ({date})\n{changes}".format(**change)
+            yield "* {version} ({date})\n{changes}".format(**change)
 
 
 def parse_changelog(stream):
@@ -31,14 +31,14 @@ def parse_changelog(stream):
             context.update(footer)
             yield context
         else:
-            context['changes'] = context.get('changes', '') + line
+            context["changes"] = context.get("changes", "") + line
 
 
-_changelog_re = re.compile('^Changelog *$')
+_changelog_re = re.compile("^Changelog *$")
 
 
 def remove_old_changelog(stream):
-    for line in iter(stream.readline, ''):
+    for line in iter(stream.readline, ""):
         if _changelog_re.match(line):
             # truncate at next line
             stream.readline()
@@ -46,10 +46,10 @@ def remove_old_changelog(stream):
             stream.seek(0, 1)
             return
 
-    raise Exception(u'Could not find Changelog section')
+    raise Exception("Could not find Changelog section")
 
 
-_header_re = re.compile('^(?P<name>\w+) \((?P<version>.+)\) \w+; \w+=\w+')
+_header_re = re.compile("^(?P<name>\w+) \((?P<version>.+)\) \w+; \w+=\w+")
 
 
 def _detect_header(line):
@@ -58,18 +58,18 @@ def _detect_header(line):
         return match.groupdict()
 
 
-_footer_re = re.compile('^ -- [^<]+ \<[^>]+\> (?P<date>.*)')
+_footer_re = re.compile("^ -- [^<]+ \<[^>]+\> (?P<date>.*)")
 
 
 def _detect_footer(line):
     match = _footer_re.match(line)
     if match:
-        return dict(date=parse_changelog_date(match.group('date')))
+        return dict(date=parse_changelog_date(match.group("date")))
 
 
 def parse_changelog_date(text):
-    return datetime.datetime(*email.utils.parsedate(text)[:6]).strftime('%Y-%m-%d')
+    return datetime.datetime(*email.utils.parsedate(text)[:6]).strftime("%Y-%m-%d")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     write_changelog()
