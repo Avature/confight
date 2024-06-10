@@ -342,6 +342,13 @@ Similarly, for *hcl* support:
 
 ## Development
 
+Create a virtual environment, and install the needed development dependencies in it:
+
+	python3 -mvenv env
+	source env/bin/activate
+	pip3 install -U pip
+	pip3 install -r requirements.txt -r dev-requirements.txt
+
 Enable `pre-commit`:
 
 	pre-commit install
