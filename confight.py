@@ -9,12 +9,7 @@ import logging
 import argparse
 import itertools
 from collections import OrderedDict
-try:
-    from ConfigParser import ConfigParser
-    # Monkey patch python 2.7 version to avoid deprecation warnings
-    setattr(ConfigParser, 'read_file', getattr(ConfigParser, 'readfp'))
-except ImportError:
-    from configparser import ConfigParser, ExtendedInterpolation
+from configparser import ConfigParser, ExtendedInterpolation
 
 import toml
 
