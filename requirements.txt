@@ -1,2 +1,2 @@
-toml
-setuptools
+toml==0.10.2
+setuptools==70.0.0
