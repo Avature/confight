@@ -353,14 +353,13 @@ Enable `pre-commit`:
 
 	pre-commit install
 
-Run application tests
+Run application tests:
 
-    tox
+	tox -m test
 
-Install the application and run tests in development:
+Run static typing analysis:
 
-    pip install -e .
-    python -m pytest
+	tox -m lint
 
 Changelog
 =========
