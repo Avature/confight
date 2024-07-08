@@ -1,0 +1,51 @@
+---
+
+default_stages: [pre-commit]
+fail_fast: true
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      # Check for files that contain merge conflict strings.
+      - id: check-merge-conflict
+      # Makes sure files end in a newline and only a newline.
+      - id: end-of-file-fixer
+        stages: [pre-commit, manual]
+      # Replaces or checks mixed line ending.
+      - id: mixed-line-ending
+        # Checks if there is any mixed line ending without modifying any file.
+        args: [--fix=no]
+      # Trims trailing whitespace.
+      - id: trailing-whitespace
+        # Preserve Markdown linebreaks
+        args: [--markdown-linebreak-ext=md]
+        stages: [pre-commit, manual]
+      # Sorts entries in requirements.txt and constraints.txt and
+      # removes incorrect entry for `pkg-resources==0.0.0`
+      - id: requirements-txt-fixer
+        files: "requirements\\.in|\\w+-requirements\\.txt$"
+  - repo: https://github.com/timothycrosley/isort
+    rev: 5.13.2
+    hooks:
+      # Sort imports alphabetically, and automatically separated into sections
+      # and by type
+      - id: isort
+        args: [--profile=black]
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0
+    hooks:
+      # Fix common misspellings in source code
+      - id: codespell
+        entry: codespell --write-changes
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.4.8
+    hooks:
+      # Fast Python linter
+      - id: ruff
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      # Format all Python code
+      - id: black
+        args: [--line-length=100, --workers=4, --quiet, --fast]

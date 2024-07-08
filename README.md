@@ -151,7 +151,7 @@ confight.parse('/path/to/config', format='toml')
 When no format is given, it tries to guess by looking at file extensions:
 
 ```
-confight.parse('/path/to/config.json')  # will gess json format
+confight.parse('/path/to/config.json')  # will guess json format
 ```
 
 You can see the list of all available extensions at `confight.FORMAT_EXTENSIONS`.
@@ -342,14 +342,24 @@ Similarly, for *hcl* support:
 
 ## Development
 
-Run application tests
+Create a virtual environment, and install the needed development dependencies in it:
 
-    tox
+	python3 -mvenv env
+	source env/bin/activate
+	pip3 install -U pip
+	pip3 install -r requirements.txt -r dev-requirements.txt
 
-Install the application and run tests in development:
+Enable `pre-commit`:
 
-    pip install -e .
-    python -m pytest
+	pre-commit install
+
+Run application tests:
+
+	tox -m test
+
+Run static typing analysis:
+
+	tox -m lint
 
 Changelog
 =========
@@ -371,7 +381,7 @@ Changelog
 * 1.4.0 (2023-12-12)
 
   [ Federico Fapitalle ]
-  * [3e618f3b] feat: adds support for HCL languaje
+  * [3e618f3b] feat: adds support for HCL language
 
   [ Frank Lenormand ]
   * [a9b3b9a2] fix(confight): Stick to older `ruamel.yaml` API
@@ -465,4 +475,3 @@ Changelog
 * 0.0.1 (2018-03-27)
 
   * Initial release.
-
