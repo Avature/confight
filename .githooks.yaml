@@ -1,0 +1,13 @@
+---
+jenkins:
+  notify:
+    enable: true
+gitlab:
+  merge_request:
+    enabled: true
+    branch_regex: ['.+']  # create MR for any branch
+    templates:
+      description: |
+        {% if teg_case_id %}
+        TEG case: {{ teg_case_url }}
+        {% endif %}
