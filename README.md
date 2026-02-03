@@ -5,6 +5,10 @@ confight
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/confight.svg)
 ![Build Status](https://github.com/Avature/confight/actions/workflows/tests.yaml/badge.svg)
 
+---
+As of 2026, this project is in Keep The Lights On mode, meaning only major bug fixes will be merged.
+---
+
 One simple way of parsing configs
 
 - Extensible "*Unix-like*" `conf.d` directory
