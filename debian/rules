@@ -19,6 +19,13 @@ override_dh_auto_install:
 	dh_auto_install
 	cd $(DESTDIR3)/usr/bin && mv confight confight3
 
+override_dh_auto_test:
+	# Pybuild intentionally sets proxy variables to http://127.0.0.1:9/ to block
+	# network access during builds. We need to let tox run without these proxies
+	# because not all dependencies are available as system packages in all Ubuntu
+	# versions.
+	http_proxy= https_proxy= HTTP_PROXY= HTTPS_PROXY= dh_auto_test
+
 override_dh_clean:
 	rm -f docs/confight.1
 	dh_clean
